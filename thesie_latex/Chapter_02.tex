@@ -41,10 +41,12 @@ In algorithm \ref{code:doubleLoop}, for each possible output value, we iterate t
 \label{code:doubleLoop}
 \end{algorithm}
 
-In algorithm \ref{code:doubleLoop}, we declared seven variables, and all of them requires $bitLength$ bits except for $OCounter$ which is $bitLength + 1$ bits. The total memory usage for variables is $7 \times bitLength + 1$ at $O(bitLength)$. As with execution time, we assume program $P$ takes time $t(P)$ to execute, and the total execution time for the double loop when break is never reached is $2^{bitLength} \times 2^{bitLength} \times t(P)$ at $(2^{O(bitLength)})$.
+In algorithm \ref{code:doubleLoop}, we declared seven variables, and all of them requires $bitLength$ bits except for $OCounter$ which is $bitLength + 1$ bits. The total memory usage for variables is $7 \times bitLength + 1$ at $O(bitLength)$. As with execution time, we assume program $P$ takes time $t(P)$ to execute, and the total execution time for the double loop when break is never reached is $2^{bitLength} \times 2^{bitLength} \times t(P)$. Thus the time complexity is $(2^{O(bitLength)}) \times t(P)$.
+
+In order to get an estimation of how much time the double loop will take to execute, we implemented a piece of C code with an empty while loop which loops $2^{32}$ times. On out experiment PC, this loop takes on average $10.30$ seconds to complete. Were we to run a double loop in bit length of 32, the execution time would be $2^{32} \times 10.30$ seconds, which is around $1403$ years. Running the double loop directly would be infeasible.
 
 \subsection{Single loop and table}
-In algorithm \ref{code:singleLoop}, we create a table with size equal to the maximum number of possible outputs($1 << bitLength$), and we use its indices as output values. $OHit[O] = 1$ means $O$ is an output for program $P$. When a $0$ turns to $1$, we increase $OCounter$. After the loop, the value of $OCounter$ is the number of outputs by program $P$. 
+In algorithm \ref{code:singleLoop}, we create a table with size equal to the maximum number of possible outputs($1 << bitLength$, or $2^{bitLength}$), and we use its indices as output values. $OHit[O] = 1$ means $O$ is an output for program $P$. When a $0$ turns to $1$, we increase $OCounter$. After the loop, the value of $OCounter$ is the number of outputs by program $P$. 
 
 \renewcommand{\algorithmiccomment}[1]{// #1}
 \begin{algorithm}
@@ -75,4 +77,7 @@ In algorithm \ref{code:singleLoop}, we create a table with size equal to the max
 \label{code:singleLoop}
 \end{algorithm}
 
-In algorithm \ref{code:singleLoop} except for the array we have 7 variables using $7 \times bitLength + 1$ memory. The array $OHit[]$ is of size $bitLength \times bitLength$ making a total of $bitLength^{2} + 7 \times bitLength + 1$ at $O(bitLength^{2})$. As with execution time, we assume program $P$ takes time $t(P)$ to execute, and the execution time for the single loop is $2^{bitLength} \times t(P)$ at $(2^{O(bitLength)})$.
+In algorithm \ref{code:singleLoop} except for the array we have 7 variables using $7 \times bitLength + 1$ memory. The array $OHit[]$ is of size $2^{bitLength} \times bitLength$ making a total of $2^{bitLength} \times bitLength + 7 \times bitLength + 1$ at $2^{O(bitLength})$. As with execution time, we assume program $P$ takes time $t(P)$ to execute, and the execution time for the single loop is $2^{bitLength} \times t(P)$. Thus the time complexity is $(2^{O(bitLength)}) \times t(P)$.
+
+\marginpar{if this is not hard we need reasons not doing this..}
+We set the bit length to $32$. In array $OHit[]$, each element is $32$ bits and the number of elements is $2^{32}$. The total memory usage for this array is $2^{32} \times 32$ bits, which is $16$ gigabytes. To our knowledge, it is neither difficult nor expensive to build a PC with more than 16 gigabytes of memory, and we can get such a PC off-the-shelf from top gaming PC brands like Alienware. 
