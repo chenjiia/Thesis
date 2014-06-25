@@ -1,8 +1,10 @@
 \chapter{Experiment with Getafix}
 	\label{CH_03}
 
-We want to use model-checking tools to see if we can reduce the time requirement of algorithm \ref{code:doubleLoop}. Specifically, we choose the reachability property(why and what other property are there) and append algorithm \ref{code:reachLine} to the end of algorithm \ref{code:doubleLoop}. The statement within the if statement has a label. Although the exact statement following that label is irrelevant, reaching this line means $OCounter$ satisfies the constrains in the condition block.
+\marginpar{(why and what other property are there)}
+We want to use model-checking tools to see if we can reduce the time requirement of algorithm \ref{code:doubleLoop}. Specifically, we choose the reachability property and append algorithm \ref{code:reachLine} to the end of algorithm \ref{code:doubleLoop}. The statement within the if statement has a label. Although the exact statement following that label is irrelevant, reaching this line means $OCounter$ satisfies the constrains in the condition block.
 
+\marginpar{correct citations of web page}
 We experimented on several model-checking tools, including Interproc from \cite{_interproc_2011}, Berkeley Lazy Abstraction Software Verification Tool(Blast) from \cite{_mtc_2008} and Getafix from \cite{la_torre_analyzing_2009}. We can not get correct reachability results from Interproc and Blast, so we shift our focus on Getafix.
 
 \renewcommand{\algorithmiccomment}[1]{// #1}
@@ -22,6 +24,7 @@ We experimented on several model-checking tools, including Interproc from \cite{
 
 \section{Getafix}
 Getafix is a symbolic model checker for Boolean programs implemented in \cite{la_torre_analyzing_2009}. Getafix only supports reachability check. It translates sequential and concurrent Boolean programs into Boolean formulae and uses the model-checker Mucke to solve the reachability problem symbolically using Boolean Decision Diagrams \cite{_getafix_2009}. 
+\marginpar{Mostly copied from getafix website. Need rewrite}
 
 \section{The converter}
 Input for Getafix are boolean programs, meaning it only supports boolean variables which can be either 0 or 1. We represent our problem in decimal, thus we need to translate it into boolean form. We implemented a converter to automate this process. The converter has three components, a parser, a built-in function generator and a piece of script which calls the first two components and assemble the output file.

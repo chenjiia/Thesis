@@ -42,6 +42,11 @@
 %********************
 % \def\clr#1{\textcolor{red}{#1}} % Color text red by typing: \clr{This is some text.}
 
+% change margin text font size to footnote
+\let\oldmarginpar\marginpar
+\renewcommand\marginpar[1]{\-\oldmarginpar[\raggedleft\footnotesize #1]%
+{\raggedright\footnotesize #1}}
+
 \begin{document}
 
 \doublespacing % Double line-spacing ( or specify something like \setspacing{1.8} )
