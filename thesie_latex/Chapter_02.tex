@@ -1,0 +1,78 @@
+\chapter{Theory background}
+	\label{CH_02}
+
+\section{Min-entropy}
+The introduction counts as chapter 1.  This page shows how the bulk of your thesis will be organized: through chapters and sections. Here is a citation.\cite{OBTMBD01}
+
+\section{Information leak}
+
+\section{Two intuitive solutions}
+To count the number of outputs of a program, we come up with two approaches: Put the program in a double loop and count the number of outputs, or iterate through all input values and record the outputs in a table. The first approach is time-consuming, while the second one is space-consuming.
+
+\subsection{Double loop and counter}
+In algorithm \ref{code:doubleLoop}, for each possible output value, we iterate through the input range to see if an input can result in this output. If we hit such an input, counter increases and the code breaks out of the inner loop to continue testing the next possible output value. After the double loop finishes, the value of $OCounter$ is the number of outputs of program $P$.
+
+\begin{algorithm}
+\begin{algorithmic}
+\renewcommand{\algorithmiccomment}[1]{// #1}
+\STATE $S \leftarrow 0$
+\STATE $O \leftarrow 0$
+\STATE $SIn \leftarrow 0$
+\STATE $OOut \leftarrow 0$
+\STATE $OCounter \leftarrow 0$
+
+\STATE $SMax \leftarrow 1 << bitLength - 1$
+\STATE $OMax \leftarrow 1 << bitLength - 1$
+
+\FOR{$O=0$ to $OMax$}
+\FOR{$S=0$ to $SMax$}
+\STATE $SIn \leftarrow S$ 
+\STATE $OOut \leftarrow P(SIn)$ 
+\COMMENT{the program $P$ takes $SIn$ as input}
+\IF{$OOut = O$}
+\STATE $OCounter \leftarrow OCounter + 1$
+\STATE break
+\ENDIF
+\ENDFOR
+\ENDFOR
+\end{algorithmic}
+
+\caption[Double loop]{Calculate the number of outputs using double loop.}
+\label{code:doubleLoop}
+\end{algorithm}
+
+In algorithm \ref{code:doubleLoop}, we declared seven variables, and all of them requires $bitLength$ bits except for $OCounter$ which is $bitLength + 1$ bits. The total memory usage for variables is $7 \times bitLength + 1$ at $O(bitLength)$. As with execution time, we assume program $P$ takes time $t(P)$ to execute, and the total execution time for the double loop when break is never reached is $2^{bitLength} \times 2^{bitLength} \times t(P)$ at $(2^{O(bitLength)})$.
+
+\subsection{Single loop and table}
+In algorithm \ref{code:singleLoop}, we create a table with size equal to the maximum number of possible outputs($1 << bitLength$), and we use its indices as output values. $OHit[O] = 1$ means $O$ is an output for program $P$. When a $0$ turns to $1$, we increase $OCounter$. After the loop, the value of $OCounter$ is the number of outputs by program $P$. 
+
+\renewcommand{\algorithmiccomment}[1]{// #1}
+\begin{algorithm}
+\begin{algorithmic}
+\STATE $S \leftarrow 0$
+\STATE $O \leftarrow 0$
+\STATE $SIn \leftarrow 0$
+\STATE $OOut \leftarrow 0$
+\STATE $OCounter \leftarrow 0$
+
+\STATE $SMax \leftarrow 1 << bitLength - 1$
+\STATE $OMax \leftarrow 1 << bitLength - 1$
+\STATE $OHit[OMax + 1] \leftarrow [0]$
+
+\FOR{$S=0$ to $SMax$}
+\STATE $SIn \leftarrow S$ 
+\STATE $OOut \leftarrow P(SIn)$ 
+\COMMENT{the program $P$ takes $SIn$ as input}
+\IF{$OHit[OOut] = 0$}
+\STATE $OCounter \leftarrow OCounter + 1$
+\STATE $OHit[OOut] \leftarrow 1$
+\ENDIF
+\ENDFOR
+
+\end{algorithmic}
+
+\caption[Single loop]{Calculate the number of outputs using single loop and a table.}
+\label{code:singleLoop}
+\end{algorithm}
+
+In algorithm \ref{code:singleLoop} except for the array we have 7 variables using $7 \times bitLength + 1$ memory. The array $OHit[]$ is of size $bitLength \times bitLength$ making a total of $bitLength^{2} + 7 \times bitLength + 1$ at $O(bitLength^{2})$. As with execution time, we assume program $P$ takes time $t(P)$ to execute, and the execution time for the single loop is $2^{bitLength} \times t(P)$ at $(2^{O(bitLength)})$.

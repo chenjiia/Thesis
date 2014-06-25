@@ -1,0 +1,77 @@
+\documentclass[letterpaper,12pt]{report}
+\usepackage[top=1in,right=1in,bottom=1in,left=1.5in,includefoot,includehead]{geometry}
+
+% PACKAGES
+%**********
+\usepackage{amsmath}		% AMS Math (http://www.ams.org/tex/amslatex.html)
+\usepackage{amssymb}		% AMS Symbols
+\usepackage{amsthm}			% AMS Theorems
+\usepackage{tocloft}		% Format the Table of Contents
+\usepackage{float}			% More float commands
+\usepackage{sectsty}		% Format section and chapter headings
+\usepackage{graphicx}		% Insert images in eps or pdf format
+\usepackage{setspace}		% Line-spacing
+\usepackage[bottom]{footmisc}	% Push footnotes to the bottom of the page
+
+\usepackage{algorithmic}	% added by Jia to enable algorithms
+\usepackage{algorithm}
+\usepackage{natbib}
+
+% Optional - link table of contents entries and citations
+% LOAD THIS PACKAGE LAST!!! (Last of all usepackage commands)
+% Feel free to change link colors
+% \usepackage[linktoc=page,colorlinks=true,linkcolor=blue,citecolor=blue]{hyperref}
+
+
+% OTHER USEFUL PACKAGES
+
+% \usepackage{epsfig}		% For EPS figures
+% \usepackage{subfigure}	% For side-by-side figures
+% \usepackage{sidecap}		% Put captions on the side of figures
+% \usepackage{rotating}		% Rotatiion of figures and tables
+% \usepackage{multirow}		% Column and row spanning in tables
+% \usepackage{chapterbib}	% Insert bibliograhpy with a simple include command
+% \usepackage{color}		% Color text (see define below, in "Custom Definitions")
+% \usepackage{enumerate}	% Special enumerated lists
+% \usepackage[citestyle=numeric-comp,bibstyle=numeric,sorting=none]{biblatex}	% Newer citation system
+% \usepackage[linktoc=page,colorlinks=true,linkcolor=blue,citecolor=blue,breaklinks]{hyperref}	% Hyper-linking of citations in the text and urls in the bibliography - IF YOU USE THIS PACKAGE, MAKE SURE IT IS BELOW ALL OTHER \usepackage{} ITEMS
+
+\input{Command_Mods}	% Lots of special formatting to make the ToC adhere to MU requirements
+
+% CUSTOM DEFINITIONS
+%********************
+% \def\clr#1{\textcolor{red}{#1}} % Color text red by typing: \clr{This is some text.}
+
+\begin{document}
+
+\doublespacing % Double line-spacing ( or specify something like \setspacing{1.8} )
+\allsectionsfont{\singlespacing} % Only body text needs double spacing, titles can be single spaced
+
+\setcounter{page}{1}    
+\pagenumbering{roman}
+
+\input{TitlePage}	% Input the Title Page (no page number, but counts as roman numeral 'i')
+%\input{Copyright}	% Input the Copyright Page. You have to pay additional fees to have your thesis/dissertation registered with the government, so this page is disabled by default.  Remove the % symbol before \input to re-enable it. For more information, see: http://gradschool.missouri.edu/policies/thesis-dissertation/guidelines/other-sections-ch6.php#copyright
+\input{Approval}	% Input the Approval Page (no page number)
+\input{Acknowledge}	% Input the Acknowledgement Page (roman numeral page number 'ii')
+\input{Contents}	% Generate and input a Table of Contents and List of Figures/Tables/etc.(roman numeral page number 'iii')
+
+\input{Abstract}
+
+\newpage
+\setcounter{page}{1}
+\pagenumbering{arabic}
+\addtocontents{toc}{\bigskip \textbf{CHAPTER}\par}
+
+\input{Introduction}
+\input{Chapter_02}
+\input{Chapter_03}
+\input{Chapter_04}
+\input{Summary}
+
+\addtocontents{toc}{\bigskip \textbf{APPENDIX}\par}
+\input{Appendix}
+\input{Bibliography}
+\input{Vita}
+
+\end{document}
