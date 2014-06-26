@@ -37,6 +37,53 @@ Input to the parser is the c-style code file and the desired bit length. Output 
 \item In the boolean code syntax which Getafix defines, function call plus the semicolon is defined as a statement, and another rule allows the code to assign a function call to an identifier, but function call itself is not an expression. This means that a function call can not work as an expression as in many other languages, and it leads to two problems: First, the decider expression in if...else and while statements can not contain function calls. Second, parameters of a function call or operands to an operator can not be a function call. We automated a solution in the parser to the first problem, which assigns the decider expression to a temporary variable and use that variable as the decider, so we can use the c-style if...else and while in the input code. For the second problem, a possible solution would be to manage a set of internal temporary variables and assign each function call to a variable, but we did not implement it.
 \end{enumerate}
 
+Input to the built-in function generator is the desired bit length. Output is a set of high-level operators like plus and left shift implemented as functions. We do not track the necessary functions in the parser, as experiments with Getafix indicate that the uncalled functions affect little on the execution time. Listing \ref{lst:isGT} shows a sample function by the generator, and table \ref{tbl:fxNames} shows all the operators supported by the converter.
+
+\lstset{language=C}  
+\begin{lstlisting}[caption={Greater than operator as a function in boolean program with bit length of 2.},label=lst:isGT]
+bool isGT(left2,left1,left0,right2,right1,right0)
+begin
+if (left2 != right2) then
+	if (left2 = 1) then
+		return 1;
+	fi
+else 
+	if (left1 != right1) then
+		if (left1 = 1) then
+			return 1;
+		fi
+	else 
+		if (left0 != right0) then
+			if (left0 = 1) then
+				return 1;
+			fi
+		fi
+	fi
+fi
+return 0;
+end
+\end{lstlisting}
+\begin{table}[h]
+\caption{Built-in function names and corresponding operators}
+\label{tbl:fxNames}
+\begin{tabular}{|l|l|}
+\hline
+Function name & Operator in input code   \\ \hline
+plus          & +                        \\ \hline
+minus         & -                        \\ \hline
+and           & \&                       \\ \hline
+or            & |                        \\ \hline
+xor           & \textasciicircum         \\ \hline
+isGT          & \textgreater             \\ \hline
+isNotEqual    & !=                       \\ \hline
+isEqual       & ==                       \\ \hline
+isGTEQ        & \textgreater=            \\ \hline
+isLT          & \textless                \\ \hline
+isLTEQ        & \textless=               \\ \hline
+lShift        & \textless\textless       \\ \hline
+rShift        & \textgreater\textgreater \\ \hline
+\end{tabular}
+\end{table}
 \section{Tests and results}
 \subsection{Sanity check}
 
