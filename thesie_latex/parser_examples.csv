@@ -1,0 +1,5 @@
+Input,Output
+var SMax = 16;,"decl SMax4,SMax3,SMax2,SMax1,SMax0;
+SMax4,SMax3,SMax2,SMax1,SMax0 := 1,0,0,0,0;
+"
+STemp = STemp - 5;,"STemp4,STemp3,STemp2,STemp1,STemp0 := minus(STemp4,STemp3,STemp2,STemp1,STemp0,0,0,1,0,1);"

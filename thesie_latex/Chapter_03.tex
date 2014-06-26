@@ -5,7 +5,7 @@
 We want to use model-checking tools to see if we can reduce the time requirement of algorithm \ref{code:doubleLoop}. Specifically, we choose the reachability property and append algorithm \ref{code:reachLine} to the end of algorithm \ref{code:doubleLoop}. The statement within the if statement has a label. Although the exact statement following that label is irrelevant, reaching this line means $OCounter$ satisfies the constrains in the condition block.
 
 \marginpar{correct citations of web page}
-We experimented on several model-checking tools, including Interproc from \cite{_interproc_2011}, Berkeley Lazy Abstraction Software Verification Tool(Blast) from \cite{_mtc_2008} and Getafix from \cite{la_torre_analyzing_2009}. We can not get correct reachability results from Interproc and Blast, so we shift our focus on Getafix.
+We experiment on several model-checking tools, including Interproc from \cite{_interproc_2011}, Berkeley Lazy Abstraction Software Verification Tool (Blast) from \cite{_mtc_2008} and Getafix from \cite{la_torre_analyzing_2009}. We can not get correct reachability results from Interproc and Blast, so we shift our focus onto Getafix.
 
 \renewcommand{\algorithmiccomment}[1]{// #1}
 \begin{algorithm}
@@ -23,21 +23,41 @@ We experimented on several model-checking tools, including Interproc from \cite{
 \end{algorithm}
 
 \section{Getafix}
-Getafix is a symbolic model checker for Boolean programs implemented in \cite{la_torre_analyzing_2009}. Getafix only supports reachability check. It translates sequential and concurrent Boolean programs into Boolean formulae and uses the model-checker Mucke to solve the reachability problem symbolically using Boolean Decision Diagrams \cite{_getafix_2009}. 
 \marginpar{Mostly copied from getafix website. Need rewrite}
+Getafix is a symbolic model checker for Boolean programs implemented in \cite{la_torre_analyzing_2009}. Getafix only supports reachability check. It translates sequential and concurrent Boolean programs into Boolean formulae and uses the model-checker Mucke to solve the reachability problem symbolically using Boolean Decision Diagrams \cite{_getafix_2009}. 
 
 \section{The converter}
-Input for Getafix are boolean programs, meaning it only supports binary variables which can be either 0 or 1. We represent our problem in c-style code, thus we need to translate it into boolean form. We implemented a converter to automate this process. The converter has three components, a parser, a built-in function generator and a piece of script which calls the first two components and assemble the output file.
+Input for Getafix are boolean programs, meaning it only supports binary variables which can be either 0 or 1. We represent our problem in c-style code, thus we need to translate it into boolean form. We implemented a converter to automate this process. The converter has three components, a parser, a built-in function generator and a piece of script which calls the first two components and assemble the output file. The converter has these properties:
+\begin{enumerate}
+\item The input to the converter is a c-style code file and a positive integer which represent the bit length. The converter supports 32 bits and less.
+\item The output of the converter is a boolean program which follows the syntax of Getafix input file.
+\item In the language that we defined for the input file, we support only one variable type: non-negative decimal integer. Again we support the length up to 32 bits.
+\item Our converter does not support function definitions. The input file has two parts, variable declarations block and statements block. The parser will print these blocks into the main function of the output boolean program. Also we require all variable declarations to appear before statements in the input code. Getafix input syntax has this requirement, and we decide to keep it in our converter.
+\item We implement support for the following symbolic operators in the language: plus +, minus -, and \&, or $|$, xor \textasciicircum , greater than \textgreater, equal ==, less than \textless, not equal !=, greater than or equal \textgreater=, less than or equal \textless=, left shift \textless\textless and right shift \textgreater\textgreater.
+\item We implement support for three control statements: if...else, while loop, goto and statements with labels. We currently do not support for loop, do...while loop, switch statements, break and continue, but these statements can be easily expressed using the supported ones.
+\item 
+\end{enumerate}
 
-Input to the parser is the c-style code file and the desired bit length. Output of the parser is its corresponding boolean program which follows the syntax of Getafix input file. First we define the syntax of input code to the parser and second we create the parser using flex and bison. The parser scans the input code and builds a syntax tree. Then the parser prints the syntax tree as a boolean program. The parser has three points worth noting:
+Input to the parser is a c-style code file and a desired bit length. Output of the parser is its corresponding boolean program which follows the syntax of Getafix input file. First we define the syntax of the input code and second we create the parser using flex and bison. The parser scans the input code and builds a syntax tree. Then the parser prints the syntax tree as a boolean program. The parser has three points worth noting:
+
+\begin{table}[h]
+\caption{Examples of input and output of the parser, with bit length of 4}
+\label{tbl:parser-example}
+\begin{tabular}{|l|l|}
+\hline
+Input& Output  \\ \hline
+var SMax = 16;     & \begin{tabular}[c]{@{}l@{}}decl SMax4,SMax3,SMax2,SMax1,SMax0;\\ Smax4, SMax3, SMax2, SMax1, SMax1 := 1,0,0,0,0;\end{tabular} \\ \hline
+STemp = STemp - 5; & \begin{tabular}[c]{@{}l@{}}STemp4,STemp3,STemp2,STemp1,STemp0 := \\ minus(STemp4,STemp3,STemp2,STemp1,STemp0,0,0,1,0,1); \end{tabular} \\ \hline
+\end{tabular}
+\end{table}
 
 \begin{enumerate}
-\item When printing the output code, the parser ``stretches'' each variable and literal into its binary form. Assume the desired bit length is $bitLength$. We split each variable into $bitLength$ variables by copying the name of the variable $bitLength$ times and append a counter value to each one. Also we convert a literal to its corresponding binary value and prepend it with zeros to reach the desired length.
-\item In a boolean program, all operators operate on bit level, so we need to implement higher-level operators like plus, minus, greater than and left shift using operators that Getafix supports. In the parser, we print these high-level operators as function calls in the output boolean program, and the built-in function generator generates the body of the function.
+\item When printing the output code, the parser ``stretches'' each variable and literal into its binary form. Assume the desired bit length is $bitLength$. We split each variable into $bitLength$ variables by copying the name of the variable $bitLength$ times and append a counter value to each one. Also we convert a literal to its corresponding binary value and prepend it with zeros to reach the desired length. Table \ref{tbl:parser-example} contains an example of how the parser deals with a variable declaration.
+\item In a boolean program, all operators operate on bit level, so we need to implement higher-level operators like plus, minus, greater than and left shift using operators that Getafix supports. In the parser, we print these high-level operators as function calls in the output boolean program, and the built-in function generator generates the body of the function. Table \ref{tbl:parser-example} contains an example of how the parser deals with a high-level operator.
 \item In the boolean code syntax which Getafix defines, function call plus the semicolon is defined as a statement, and another rule allows the code to assign a function call to an identifier, but function call itself is not an expression. This means that a function call can not work as an expression as in many other languages, and it leads to two problems: First, the decider expression in if...else and while statements can not contain function calls. Second, parameters of a function call or operands to an operator can not be a function call. We automated a solution in the parser to the first problem, which assigns the decider expression to a temporary variable and use that variable as the decider, so we can use the c-style if...else and while in the input code. For the second problem, a possible solution would be to manage a set of internal temporary variables and assign each function call to a variable, but we did not implement it.
 \end{enumerate}
 
-Input to the built-in function generator is the desired bit length. Output is a set of high-level operators like plus and left shift implemented as functions. We do not track the necessary functions in the parser, as experiments with Getafix indicate that the uncalled functions affect little on the execution time. Listing \ref{lst:isGT} shows a sample function by the generator, and table \ref{tbl:fxNames} shows all the operators supported by the converter.
+Input to the built-in function generator is a desired bit length. Output is a set of high-level operators like plus and left shift implemented as functions. We do not track the necessary functions in the parser, as experiments with Getafix indicate that the uncalled functions affect little on the execution time. Listing \ref{lst:isGT} shows a sample function by the generator.
 
 \lstset{language=C}  
 \begin{lstlisting}[caption={Greater than operator as a function in boolean program with bit length of 2.},label=lst:isGT]
@@ -63,27 +83,9 @@ fi
 return 0;
 end
 \end{lstlisting}
-\begin{table}[h]
-\caption{Built-in function names and corresponding operators}
-\label{tbl:fxNames}
-\begin{tabular}{|l|l|}
-\hline
-Function name & Operator in input code   \\ \hline
-plus          & +                        \\ \hline
-minus         & -                        \\ \hline
-and           & \&                       \\ \hline
-or            & |                        \\ \hline
-xor           & \textasciicircum         \\ \hline
-isGT          & \textgreater             \\ \hline
-isNotEqual    & !=                       \\ \hline
-isEqual       & ==                       \\ \hline
-isGTEQ        & \textgreater=            \\ \hline
-isLT          & \textless                \\ \hline
-isLTEQ        & \textless=               \\ \hline
-lShift        & \textless\textless       \\ \hline
-rShift        & \textgreater\textgreater \\ \hline
-\end{tabular}
-\end{table}
+
+Input to the third component, a piece of script, is the c-style code file and the desired bit length. Output of the script is a boolean program ready for Getafix to process.
+
 \section{Tests and results}
 \subsection{Sanity check}
 
