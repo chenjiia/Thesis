@@ -29,13 +29,12 @@ Getafix is a symbolic model checker for Boolean programs implemented in \cite{la
 \section{The converter}
 Input for Getafix are boolean programs, meaning it only supports binary variables which can be either 0 or 1. We represent our problem in c-style code, thus we need to translate it into boolean form. We implemented a converter to automate this process. The converter has three components, a parser, a built-in function generator and a piece of script which calls the first two components and assemble the output file. The converter has these properties:
 \begin{enumerate}
-\item The input to the converter is a c-style code file and a positive integer which represent the bit length. The converter supports 32 bits and less.
+\item The input to the converter is a c-style code file and a positive integer which represent the bit length. The converter supports 32 bits and less. Also note that the converter represents a number with bit length of $bitLength$ using $bitLength + 1$ bits. We do this so that writing a loop which iterate from $0$ to $1<<bitLength - 1$ is easier.
 \item The output of the converter is a boolean program which follows the syntax of Getafix input file.
 \item In the language that we defined for the input file, we support only one variable type: non-negative decimal integer. Again we support the length up to 32 bits.
 \item Our converter does not support function definitions. The input file has two parts, variable declarations block and statements block. The parser will print these blocks into the main function of the output boolean program. Also we require all variable declarations to appear before statements in the input code. Getafix input syntax has this requirement, and we decide to keep it in our converter.
 \item We implement support for the following symbolic operators in the language: plus +, minus -, and \&, or $|$, xor \textasciicircum , greater than \textgreater, equal ==, less than \textless, not equal !=, greater than or equal \textgreater=, less than or equal \textless=, left shift \textless\textless and right shift \textgreater\textgreater.
 \item We implement support for three control statements: if...else, while loop, goto and statements with labels. We currently do not support for loop, do...while loop, switch statements, break and continue, but these statements can be easily expressed using the supported ones.
-\item 
 \end{enumerate}
 
 Input to the parser is a c-style code file and a desired bit length. Output of the parser is its corresponding boolean program which follows the syntax of Getafix input file. First we define the syntax of the input code and second we create the parser using flex and bison. The parser scans the input code and builds a syntax tree. Then the parser prints the syntax tree as a boolean program. The parser has three points worth noting:
@@ -84,7 +83,7 @@ return 0;
 end
 \end{lstlisting}
 
-Input to the third component, a piece of script, is the c-style code file and the desired bit length. Output of the script is a boolean program ready for Getafix to process.
+Input to the third component, a piece of script, is a c-style code file and a desired bit length. Output of the script is a boolean program ready for Getafix to process. The script first passes the bit length to the built-in function generator and redirect its output to the output file. Then the script passes both the input to the parser and append its output to the output file. At this point the output is complete.
 
 \section{Tests and results}
 \subsection{Sanity check}
