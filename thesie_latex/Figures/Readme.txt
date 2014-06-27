@@ -1,2 +1,2 @@
-.pdf files are needed if compiling a .pdf document
-.eps files are needed if compiling a .dvi document
+.odg file can be edited in libreoffice and openoffice
+.eps is exported from .odg

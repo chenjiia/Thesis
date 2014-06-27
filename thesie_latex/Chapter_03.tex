@@ -26,8 +26,15 @@ We experiment on several model-checking tools, including Interproc from \cite{_i
 \marginpar{Mostly copied from getafix website. Need rewrite}
 Getafix is a symbolic model checker for Boolean programs implemented in \cite{la_torre_analyzing_2009}. Getafix only supports reachability check. It translates sequential and concurrent Boolean programs into Boolean formulae and uses the model-checker Mucke to solve the reachability problem symbolically using Boolean Decision Diagrams \cite{_getafix_2009}. 
 
+\begin{figure}
+\centering
+\caption{Converter, Getafix and Mucke complet workflow}
+\label{fig:workFlow}
+\includegraphics[scale=0.8]{Figures/workFlow}
+\end{figure}
+
 \section{The converter}
-Input for Getafix are boolean programs, meaning it only supports binary variables which can be either 0 or 1. We represent our problem in c-style code, thus we need to translate it into boolean form. We implemented a converter to automate this process. The converter has three components, a parser, a built-in function generator and a piece of script which calls the first two components and assemble the output file. The converter has these properties:
+Input for Getafix are boolean programs, meaning it only supports binary variables which can be either 0 or 1. We represent our problem in c-style code, thus we need to translate it into boolean form. We implemented a converter to automate this process, and figure \ref{fig:workFlow} shows the complete workflow including the converter. The converter has three components, a parser, a built-in function generator and a piece of script which calls the first two components and assemble the output file. The converter has these properties:
 \begin{enumerate}
 \item The input to the converter is a c-style code file and a positive integer which represent the bit length. The converter supports 32 bits and less. Also note that the converter represents a number with bit length of $bitLength$ using $bitLength + 1$ bits. We do this so that writing a loop which iterate from $0$ to $1<<bitLength - 1$ is easier.
 \item The output of the converter is a boolean program which follows the syntax of Getafix input file.
@@ -86,5 +93,14 @@ end
 Input to the third component, a piece of script, is a c-style code file and a desired bit length. Output of the script is a boolean program ready for Getafix to process. The script first passes the bit length to the built-in function generator and redirect its output to the output file. Then the script passes both the input to the parser and append its output to the output file. At this point the output is complete.
 
 \section{Tests and results}
+Before we have the converter, we coded a test case manually and Getafix gave us the correct answer. Now with the converter we can run more complicated tests and see if Getafix is a good solution to the problem of calculating information leakage. We decide to run the ten test cases from paper \cite{meng_calculating_2011}. In each test, $O$ represents the output of its test, and $S$ is the input.
+ 
 \subsection{Sanity check}
+Listing \ref{lst:sanityCheck} shows the code we use. In this test, $O$ remains constant unless $S$ is within a certain range. The program has 16 different outputs, ranging from $4$ to $19$.
 
+\lstset{language=C}  
+\begin{lstlisting}[caption={Sanity check test program.},label=lst:sanityCheck]
+var base = 4;
+if(S < 16){O = base+ S;}
+else{O = base;}
+\end{lstlisting}
