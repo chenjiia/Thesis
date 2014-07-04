@@ -1,6 +1,20 @@
+% !TEX root = ThesisMaster.tex
 \newpage
 \addcontentsline{toc}{chapter}{ABSTRACT}
 
 \centerline{\bf \large ABSTRACT}
 \vskip 10mm % Edit everything below with your abstract.
-This is the abstract of your dissertation project.  It should not exceed one page.
+A \emph{confidential} program should not allow \emph{any} information about its secret inputs to be inferred from its public outputs. Such confidentiality is, however, difficult to achieve in practice. %A password-checker, for example, leaks information about whether a particular password is correct. 
+Therefore, it has been proposed in literature to evaluate security of programs by computing the \emph{amount} of information leaked (a low amount of information leakage is desirable). 
+% In order to quantify the amount of information leaked by a program, the information-theoretic measure of \emph{min-entropy} is often used.   
+We consider the problem of \emph{computing} 
+information leaked by a deterministic  program,  when the information-theoretic measure of \emph{min-entropy} is used to quantify the amount of information. 
+
+In order to measure the information leaked by a program $P$ using min-entropy, one has to count the number of different possible outputs that may be achieved when the program is run with different inputs.  %The  min-entropy leakage of the program $P$ is the binary logarithm of this quantity. 
+Now, if the  input to the program $P$ consists of $n$-bits, this quantity can be computed by running the program on each of the  $2^n$ different inputs and remembering the outputs observed on each of the different inputs. Since different inputs can lead to different outputs, this naive algorithm can take $O(2^n)$-additional space.  The same computation can be actually carried out in polynomial additional space,   but in this case the program has to be run  $2^{2n}$ times.  The latter observation lies at the heart of  recent results which show that the problem of checking whether information leaked by a program is equal to a given number has the same complexity of checking safety in  programs.  
+
+
+
+  %and (b) Shannon entropy. The key challenge in computing these measures is that we need the total number of possible outputs and, for each possible output, the number of inputs that lead to it. A direct computation of these quantities is infeasible because of the state-explosion problem.  We therefore propose symbolic algorithms based on binary decision diagrams (BDDs).
+%The advantage of our approach is that these symbolic algorithms can be easily implemented in any BDD-based model-checking tool that checks for reachability in deterministic non-recursive programs by computing  program summaries. We demonstrate the validity of our approach by implementing these algorithms in a tool , which is  built upon , a model checker
+%for Boolean programs.  
