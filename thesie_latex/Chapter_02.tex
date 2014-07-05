@@ -11,7 +11,7 @@ To count the number of outputs of a program, we come up with two approaches: Put
 
 \subsection{Double loop and counter}
 In algorithm \ref{alg:doubleLoop}, for each possible output value, we iterate through the input range to see if an input can result in this output. If we hit such an input, counter increases and the code breaks out of the inner loop to continue testing the next possible output value. After the double loop finishes, the value of $OCounter$ is the number of outputs of program $P$.
-
+\RestyleAlgo{boxruled}
 \begin{algorithm}
 \begin{algorithmic}
 \renewcommand{\algorithmiccomment}[1]{// #1}
