@@ -1,7 +1,82 @@
 \chapter{Monotonic programs}
 	\label{CH_04}
-	
-In this chapter we describe our discovery that if the test program $P$ is monotonic, then we can execute the program wrapped in algorithm \ref{alg:doubleLoop} and get a direct output count in a reasonable time.
+% should use past tense
+
+In this chapter we describe our discovery that if the test program $P$ meets a certain property, then we can execute the program in a loop and get a direct output count in a reasonable time.
+
+Need to insert somewhere else.
+
+\begin{mydef}
+Let $bitLength\in \left\{ {0,1,2,..., 32}\right\}$ and let $P$ be a function whose input $S \in \left\{ {0,1,2,..., 1\ll bitLength-1}\right\}$ and output $O \in \left\{ {0,1,2,..., 1\ll bitLength-1}\right\}$.
+\end{mydef}
 
 \section{Discovery by mistake}
-During the initial tests with the sanity check program of bit length 32, we code algorithm \ref{alg:doubleLoop} in C using while instead of for, compile it and execute the program. The program terminates in less than a minute, and gives the correct output count. Later we time the execution of an empty loop from $0$ to $2^{32} - 1$ and the result is $10.30$ seconds, so theoretically the double loop would take a much longer time to terminate, longer than our test result with sanity check. 
+During the initial tests with the sanity check program of bit length 32, the program terminates in less than a minute and gives the correct output count. Later we time the execution of an empty loop from $0$ to $2^{32} - 1$ and the result is $10.30$ seconds, so theoretically the double loop would take a much longer time to terminate, longer than our test result with sanity check.  Listing \ref{lst:1stTry} shows the C code we used.
+
+\lstset{language=C}  
+\begin{lstlisting}[caption={Initial implementation of the double loop with sanity check in C.},label=lst:1stTry]
+uint32_t S = 0;
+uint32_t O = 0;
+uint32_t SMax = S - 1;
+uint32_t OMax = O - 1;
+uint32_t OCounter = 0;
+uint32_t OTemp = 0;
+uint32_t base = 0;
+for (;O<OMax;O++){
+	for (;S<SMax;S++){
+		//program start here
+		if (S < 16)
+			OTemp = base + S;
+		else
+			OTemp = base;
+		//program end here
+		if (OTemp == O){
+			OCounter ++;
+			break;
+}	}	}
+\end{lstlisting}
+
+Due to the large difference in actual execution time and the theoretical time, we decided to inspect the code for errors. Our code differs from Algorithm \ref{alg:doubleLoop} at two places: First, $S$ and $O$ can not reach $SMax$ and $OMax$ due to the use of $<$, thus the upper bound is not tested. Second, in the inner loop, we did not initialize $S$ to $0$ except for its first iteration. The first point does not affect the output count of the sanity check example as every $S$ greater than $16$ will lead to a $P(S)$ value of $base$ which is $0$. The second point is the cause of the large time difference, because essentially $P$ only executes once for each $S$, reaching a total of $2^{32}$ times, much smaller than the full double loop in which $P$ executes $2^{2 \times 32}$ times.
+
+We found that removing the initialization of $S$ to $0$ can be a way to speed up some test cases, but not all. Specifically, program $P$ has to obey certain properties:
+
+\begin{enumerate}
+\item Function $P$ is monotonically increasing within range $[0, n]$.
+\item The output of function $P$ with $S$ in range $[0, n]$ has to start with zero and is continuous.
+\item Each output of function $P$ with $S$ in range $[n+1, 1\ll bitLength-1]$ can be produced by at least one $S$ in range $[0, n]$.
+\end{enumerate}
+
+\section{Improvements}
+The properties that $P$ has to follow in order for the optimization to work is rather strict. For example in the sanity check test, the optimization only works when $base$ is $0$. A possible solution would be to start $O$ at the lowest value $P$ can output, in essence pulling the function down on y axis so that it starts with $0$. However, this approach does not ease the restrictions.
+
+In our second attempt to improve this optimization method, we started with monotonicity and rearranged the architecture of the outer program. The problem is to count the number of outputs of a monotonically increasing function, 
+
+
+\lstset{language=C}  
+\begin{lstlisting}[caption={Implementation of the optimization with sanity check in C.},label=lst:2ndTry]
+unsigned int S = 0;
+unsigned int SMax = 4294967295;
+unsigned int base =4;
+unsigned int STemp = S;
+unsigned int OTemp = 0;
+//program starts here
+if (STemp< 16){OTemp = base+ STemp;}
+else{OTemp = base;}
+//program ends here
+unsigned int OCounter = 1;
+unsigned int OMax = OTemp;
+S++; 
+while (S<= SMax){
+	STemp = S;
+	//program starts here
+	if(STemp < 16){OTemp = base+ STemp;	}
+	else{OTemp = base;}
+	//program ends here
+	if (OTemp > OMax ){
+		OMax = OTemp;
+		OCounter= OCounter+1;
+	}
+	if(S < SMax) S=S+1;
+	else break;
+}
+\end{lstlisting}
