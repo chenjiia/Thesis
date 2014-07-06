@@ -2,7 +2,7 @@
 	\label{CH_03}
 
 \marginpar{(why and what other property are there)}
-We want to use model-checking tools to see if we can reduce the time requirement of algorithm \ref{code:doubleLoop}. Specifically, we choose the reachability property and append algorithm \ref{code:reachLine} to the end of algorithm \ref{code:doubleLoop}. The statement within the if statement has a label. Although the exact statement following that label is irrelevant, reaching this line means $OCounter$ satisfies the constrains in the condition block.
+We want to use model-checking tools to see if we can reduce the time requirement of Algorithm \ref{alg:doubleLoop}. Specifically, we choose the reachability property and append Algorithm \ref{alg:reachLine} to the end of Algorithm \ref{alg:doubleLoop}. The statement within the if statement has a label. Although the exact statement following that label is irrelevant, reaching this line means $OCounter$ satisfies the constrains in the condition block.
 
 \marginpar{correct citations of web page}
 We experiment on several model-checking tools, including Interproc from \cite{_interproc_2011}, Berkeley Lazy Abstraction Software Verification Tool (Blast) from \cite{_mtc_2008} and Getafix from \cite{la_torre_analyzing_2009}. We can not get correct reachability results from Interproc and Blast, so we shift our focus onto Getafix.
@@ -19,7 +19,7 @@ We experiment on several model-checking tools, including Interproc from \cite{_i
 \end{algorithmic}
 
 \caption[Single loop]{Determine if $OCounter$ meets certain constrains.}
-\label{code:reachLine}
+\label{alg:reachLine}
 \end{algorithm}
 
 \section{Getafix}
@@ -34,7 +34,7 @@ Getafix is a symbolic model checker for Boolean programs implemented in \cite{la
 \end{figure}
 
 \section{The converter}
-Input for Getafix are boolean programs, meaning it only supports binary variables which can be either 0 or 1. We represent our problem in c-style code, thus we need to translate it into boolean form. We implemented a converter to automate this process, and figure \ref{fig:workFlow} shows the complete workflow including the converter. The converter has three components, a parser, a built-in function generator and a piece of script which calls the first two components and assemble the output file. The converter has these properties:
+Input for Getafix are boolean programs, meaning it only supports binary variables which can be either 0 or 1. We represent our problem in c-style code, thus we need to translate it into boolean form. We implemented a converter to automate this process, and Figure \ref{fig:workFlow} shows the complete workflow including the converter. The converter has three components, a parser, a built-in function generator and a piece of script which calls the first two components and assemble the output file. The converter has these properties:
 \begin{enumerate}
 \item The input to the converter is a c-style code file and a positive integer which represent the bit length. The converter supports 32 bits and less. Also note that the converter represents a number with bit length of $bitLength$ using $bitLength + 1$ bits. We do this so that writing a loop which iterate from $0$ to $1<<bitLength - 1$ is easier.
 \item The output of the converter is a boolean program which follows the syntax of Getafix input file.

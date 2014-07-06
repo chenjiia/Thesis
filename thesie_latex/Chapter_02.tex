@@ -10,7 +10,7 @@ The introduction counts as chapter 1.  This page shows how the bulk of your thes
 To count the number of outputs of a program, we come up with two approaches: Put the program in a double loop and count the number of outputs, or let the program iterate through all input values and record the outputs in an array. The first approach is time-consuming, while the second one is space-consuming.
 
 \subsection{Double loop and counter}
-In algorithm \ref{alg:doubleLoop}, for each possible output value, we iterate through the input range to see if an input can result in this output. If we hit such an input, counter increases and the code breaks out of the inner loop to continue testing the next possible output value. After the double loop finishes, the value of $OCounter$ is the number of outputs of program $P$.
+In Algorithm \ref{alg:doubleLoop}, for each possible output value, we iterate through the input range to see if an input can result in this output. If we hit such an input, counter increases and the code breaks out of the inner loop to continue testing the next possible output value. After the double loop finishes, the value of $OCounter$ is the number of outputs of program $P$.
 
 \RestyleAlgo{boxruled}
 \begin{algorithm}
@@ -42,7 +42,7 @@ In algorithm \ref{alg:doubleLoop}, for each possible output value, we iterate th
 \label{alg:doubleLoop}
 \end{algorithm}
 
-In algorithm \ref{alg:doubleLoop}, we declared seven variables, and all of them require $bitLength$ bits except for $OCounter$ which is $bitLength + 1$ bits. The total memory usage for variables is $7 \times bitLength + 1$ at $O(bitLength)$. As with execution time, we assume program $P$ takes time $t(P)$ to execute, and the total execution time for the double loop when break is never reached is $2^{bitLength} \times 2^{bitLength} \times t(P)$. Thus the time complexity is $(2^{O(bitLength)}) \times t(P)$.
+In Algorithm \ref{alg:doubleLoop}, we declared seven variables, and all of them require $bitLength$ bits except for $OCounter$ which is $bitLength + 1$ bits. The total memory usage for variables is $7 \times bitLength + 1$ at $O(bitLength)$. As with execution time, we assume program $P$ takes time $t(P)$ to execute, and the total execution time for the double loop when break is never reached is $2^{bitLength} \times 2^{bitLength} \times t(P)$. Thus the time complexity is $(2^{O(bitLength)}) \times t(P)$.
 
 In order to get an estimation of how much time the double loop will take to execute, we implemented a piece of C code with an empty while loop which loops $2^{32}$ times. On out experiment PC, this loop takes on average $10.30$ seconds to complete. Were we to run a double loop in bit length of 32, the execution time would be $2^{32} \times 10.30$ seconds, which is around $1403$ years. Running the double loop at 32 bits would be infeasible.
 
@@ -64,7 +64,7 @@ Starting with bit length $n$, the time requirement for a full double loop is $2^
 \end{table}
 
 \subsection{Single loop and array}
-In algorithm \ref{alg:singleLoop}, we create a bit array with size equal to the maximum number of possible outputs($1 << bitLength$, or $2^{bitLength}$) and initialize it with zeros. While we iterate through the range of $S$, we set each $OHit[P(SIn)]$ to $1$. When a $0$ turns to $1$, we increase $OCounter$. After the loop, the value of $OCounter$ is the number of outputs by program $P$. 
+In Algorithm \ref{alg:singleLoop}, we create a bit array with size equal to the maximum number of possible outputs($1 << bitLength$, or $2^{bitLength}$) and initialize it with zeros. While we iterate through the range of $S$, we set each $OHit[P(SIn)]$ to $1$. When a $0$ turns to $1$, we increase $OCounter$. After the loop, the value of $OCounter$ is the number of outputs by program $P$. 
 
 \renewcommand{\algorithmiccomment}[1]{// #1}
 \begin{algorithm}
@@ -96,7 +96,7 @@ In algorithm \ref{alg:singleLoop}, we create a bit array with size equal to the 
 \label{alg:singleLoop}
 \end{algorithm}
 
-In algorithm \ref{alg:singleLoop} except for the array we have 7 variables using $7 \times bitLength + 1$ memory. The array $OHit[]$ is of size $2^{bitLength} \times 1$ making a total of $2^{bitLength} + 7 \times bitLength + 1$ at $2^{O(bitLength})$. As with execution time, we assume program $P$ takes time $t(P)$ to execute, and the execution time for the single loop is $2^{bitLength} \times t(P)$. Thus the time complexity is $(2^{O(bitLength)}) \times t(P)$.
+In Algorithm \ref{alg:singleLoop} except for the array we have 7 variables using $7 \times bitLength + 1$ memory. The array $OHit[]$ is of size $2^{bitLength} \times 1$ making a total of $2^{bitLength} + 7 \times bitLength + 1$ at $2^{O(bitLength})$. As with execution time, we assume program $P$ takes time $t(P)$ to execute, and the execution time for the single loop is $2^{bitLength} \times t(P)$. Thus the time complexity is $(2^{O(bitLength)}) \times t(P)$.
 
 \marginpar{if this is not hard we need reasons not doing this..}
-We set the bit length to $32$. In array $OHit[]$, each element is $1$ bit and the number of elements is $2^{32}$. The total memory usage for this array is $2^{32} \times 1$ bits, which is $0.5$ gigabytes. To our knowledge, it is neither difficult nor expensive to build a PC with more than 16 gigabytes of memory, and we can get such a PC off-the-shelf from top gaming PC brands like Alienware. However, as this memory requirement grows exponentially, adding two to three bits to the bit length and the requirement will exceed the capacity of current PCs.
+We set the bit length to $32$. In array $OHit[]$, each element is $1$ bit and the number of elements is $2^{32}$. The total memory usage for this array is $2^{32} \times 1$ bits, which is $0.5$ gigabytes. To our knowledge, it is neither difficult nor expensive to build a PC with more than 16 gigabytes of memory, and we can get such a PC off-the-shelf from top gaming PC brands like Alienware. However, as this memory requirement grows exponentially, adding five or six bits to the bit length and the requirement will exceed the capacity of current PCs.
