@@ -5,15 +5,15 @@
 \centerline{\bf \large ABSTRACT}
 \vskip 10mm 
 
-A \emph{confidential} program should not allow \emph{any} information about its secret inputs to be inferred from its public outputs. Such confidentiality is, however, difficult to achieve in practice. Therefore, it has been proposed in literature to evaluate security of programs by computing the \emph{amount} of information leaked (a low amount of information leakage is desirable). 
+A \emph{confidential} program should not allow \emph{any} information about its secret inputs to be inferred from its public outputs.  As such confidentiality is difficult to achieve in practice, it has been proposed in literature to evaluate security of programs by computing the \emph{amount} of information leaked. %(a low amount of information leakage is desirable). 
 We consider the problem of \emph{computing} 
-information leaked by a deterministic  program,  when the information-theoretic measure of \emph{min-entropy} is used to quantify the amount of information. 
+information leaked by a deterministic  program  when the information-theoretic measure of \emph{min-entropy} is used to quantify the amount of information. 
 
-The main challenge in computing the amount of  information leaked by a program $P$ using min-entropy is that one has to count the number of different possible outputs that may be observed when the program is run on different inputs. Recent results show that the problem of checking whether information leaked by a program is equal to  (or less than) a given number is in the same computational complexity class as checking safety in  programs.  Therefore, in principle,   leakage can be estimated using model-checking tools which were  originally developed for checking safety in programs.  
+The main challenge in computing the amount of  information leaked by a program $P$ using min-entropy is that one has to count the number of distinct possible outputs that may be observed when the program is run on different inputs. There is a polynomial-time reduction from the problem of checking whether information leaked by a program is equal to  (or less than) a given number to the problem of checking safety in  programs.  Therefore, in principle,   leakage can be estimated using model-checking tools which were  originally developed for checking safety in programs.  
  
-We tested the above above hypothesis using two popular model-checking tools, JMoped and Getafix. Our results indicate that these   do not scale very well as  the number of bits
-in the input increases.  However, we observe a dramatic improvement in their performance  if the program $P$ enjoys the additional property of \emph{monotonicity}. Observe that if the program $P$ takes $n$-bit inputs and outputs $m$-bits then the program $P$ can be considered as a function a function $P_{func}$ from $n$-bit binary numbers to $m$-bit binary numbers.    We say $P$ enjoys   
-\emph{monotonicity}  if for each pair of $n$-bit  binary numbers $s_1, s_2$  such that  $s_1\leq s_2$ we have that $P_{func}(s_1) \leq P_{func}(s_2).$
+We tested the above  hypothesis using two popular model-checking tools, JMoped and Getafix. Our tests indicate that these   do not scale as  the number of bits
+in the input increases.  However, we show that if the program $P$ enjoys the additional property of \emph{monotonicity} then we can use a different reduction to the  problem of checking safety in  programs.  Note that if the program $P$ inputs $n$ bits and outputs $m$ bits then the program $P$ can be considered as  a function $P_{func}$ from $n$-bit binary numbers to $m$-bit binary numbers.    We say $P$ enjoys   
+\emph{monotonicity}  if for each pair of $n$-bit  binary numbers $s_1, s_2$  such that  $s_1\leq s_2,$ we have that $P_{func}(s_1) \leq P_{func}(s_2).$ We observe a dramatic improvement in the performance with this new reduction.
 
 
   
