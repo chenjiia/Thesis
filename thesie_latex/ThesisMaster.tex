@@ -15,8 +15,12 @@
 
 \usepackage{algorithmic}	% added by Jia to enable algorithms
 \usepackage{algorithm2e}
+\RestyleAlgo{boxruled}
+\renewcommand{\algorithmiccomment}[1]{// #1}
+
 \usepackage{natbib}
 \usepackage{listings}
+\lstset{frame=single, captionpos=b}
 
 \usepackage{amsthm}
 \newtheorem{mydef}{Definition}

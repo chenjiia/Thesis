@@ -12,7 +12,6 @@ To count the number of outputs of a program, we come up with two approaches: Put
 \subsection{Double loop and counter}
 In Algorithm \ref{alg:doubleLoop}, for each possible output value, we iterate through the input range to see if an input can result in this output. If we hit such an input, $OCounter$ increases and the code breaks out of the inner loop to continue testing the next possible output value. After the double loop finishes, the value of $OCounter$ is the number of outputs of program $P$.
 
-\RestyleAlgo{boxruled}
 \begin{algorithm}
 \begin{algorithmic}
 \renewcommand{\algorithmiccomment}[1]{// #1}
@@ -52,7 +51,7 @@ Starting with bit length $n$, the time requirement for a full double loop is $2^
 \centering
 \begin{tabular}{|l|l|l|}
 \hline Bit length & Time(s) & Multiplier\\
-\hline 14 & 0.708 & N/A	\\
+\hline 14 & 0.708 & 	\\
 \hline 15 & 2.797 & 3.951	\\
 \hline 16 & 11.196	& 4.003	\\
 \hline 17 & 44.515	& 3.976	\\
