@@ -51,6 +51,17 @@ The properties that $P$ has to follow in order for the optimization to work is r
 
 In our second attempt to improve this optimization method as shown in Listing \ref{lst:2ndTry}, we started with monotonicity and rearranged the architecture of the outer program. The problem is to count the number of outputs of a monotonically increasing function, and our solution is to iterate through the entire range of $S$ and keep track of the largest output value. If $P$ generates a value $OOut$ which is larger than the current largest value, then $OOut$ replaces that value and $OCounter$ increases. The properties that $P$ has to follow in order to use this optimization is:
 
+\begin{enumerate}
+\item Set the range of $n$ to $[0, 2^{bitLength}-2]$.
+\item Calculate $P(S_{n})$ to be $O_{n}$ and store it in set $O[]$.
+\item Calculate $P(S_{n+1})$ to be $O_{n+1}$ has to be either:
+	\begin{enumerate}
+		\item Greater than $O_{n}$, in which case we store $O_{n+1}$ in $O[]$.
+		\item Already in set $O[]$.
+	\end{enumerate}
+\item Continue step $2$ on the next $n$ value until $n$ reaches its upper bound.
+\end{enumerate}
+
 \marginpar{This is wrong. Correct this.}
 \begin{enumerate}
 \item Function $P$ is monotonically increasing within range $[n_{1}, n_{2}]$.
