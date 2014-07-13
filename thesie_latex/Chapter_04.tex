@@ -230,7 +230,7 @@ if(O + 16 <= S){O = O + 16;}
 \end{table}
 
 \subsection{Electronic purse}
-Listing \ref{lst:electronic} shows the code. This test leaks the upper half of $S$ to $O$ through binary search. The output count depends on the bit length, and at $8$ bits, it has $2^{4} = 16$ different outputs. We can use the optimization in this test, and the timing results are in Table \ref{tbl:electronic}.
+Listing \ref{lst:electronic} shows the code. Assume $S$ is the account balance, we set the deduction to $5$, and output $O$ represents the number of times one can debit such an amount.  In this test we set $SMax$ to $19$,and the program has $4$ outputs, ranging from $0$ to $3$. We can use the optimization in this test, and the timing results are in Table \ref{tbl:electronic}.
 
 \lstset{language=C}  
 \begin{lstlisting}[caption={Electronic purse test program.},label=lst:electronic]
@@ -252,6 +252,7 @@ while(S >= 5){
 \end{table}
 
 \subsection{Sum query}
+Listing \ref{lst:sum} shows the code. This test leaks the sum of its three inputs to $O$. We set $S1, S2$ and $S3$ to be less than $10$, so the program has $28$ outputs ranging from $0$ to $27$. We can use the optimization in this test, and the timing results are in Table \ref{tbl:sum}.
 
 \lstset{language=C}  
 \begin{lstlisting}[caption={Sum query test program.},label=lst:sum]
