@@ -91,9 +91,27 @@ jMoped is a model checker which checks for coverage in Java programs. The author
 
 \section{Tests and results}
 Before we have the converter, we coded a few test cases manually and Getafix gave us the correct answers. Now with the converter we can run more complicated tests and see if Getafix is a good solution to the problem of calculating information leakage. As with jMoped, we rewrite the tests in Java. We decide to run the eight test cases from paper \cite{meng_calculating_2011}. In each test, $O$ represents the output of the test program, and $S$ is the input. Also in the tables, optimization refers to the final optimization in the previous chapter, and an empty cell means that we did not do this experiment.
+
+We did our tests on a laptop computer, and key hardware specifications are:
+\begin{description}
+  \item[Model] Lenovo ideapad Y580-IFI
+  \item[CPU] Intel Core i5-3210M @ 2.5GHz
+  \item[Memory] 4GBytes DDR3-1600 $\times$ 2
+\end{description}
+
+And the software specifications are:
+
+\begin{description}
+  \item[OS] Ubuntu 14.04 LTS 32-bit
+  \item[Getafix] Version information not available. Source code retrieved on 2014/4/10
+  \item[Mucke] Version 0.4.4
+  \item[Eclipse] Eclipse juno sr2
+  \item[jMoped] Version 2.0.2
+\end{description}
+
  
 \subsection{Sanity check}
-Listing \ref{lst:sanity} shows the code we use. In this test, $O$ remains constant unless $S$ is within a certain range. The program has 16 different outputs, ranging from $4$ to $19$. We can use 
+Listing \ref{lst:sanity} shows the code we use. In this test, $O$ remains constant unless $S$ is within a certain range. The program has 16 different outputs, ranging from $4$ to $19$. We can use the optimization in this test, and the timing results are in Table \ref{tbl:sanity}.
 
 \lstset{language=C}  
 \begin{lstlisting}[caption={Sanity check test program.},label=lst:sanity]
