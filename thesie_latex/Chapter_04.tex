@@ -1,89 +1,248 @@
-\chapter{Monotonic programs}
+\chapter{Experiment with Getafix and jMoped}
 	\label{CH_04}
-% should use past tense
 
-In this chapter we describe our discovery that if the test program $P$ meets a certain property, then we can execute the program in a loop and get a direct output count in a reasonable time.
+\marginpar{(why and what other property are there)}
+We want to use model-checking tools to see if we can reduce the time requirement of Algorithm \ref{alg:doubleLoop}. Specifically, we choose the reachability property and append Algorithm \ref{alg:reachLine} to the end of Algorithm \ref{alg:doubleLoop}. The statement within the if statement has a label. Although the exact statement following that label is irrelevant, reaching this line means $OCounter$ satisfies the constrains in the condition block.
 
-Need to insert somewhere else.
+\marginpar{correct citations}
+We experiment on several model-checking tools, including Interproc from \cite{_interproc_2011}, Berkeley Lazy Abstraction Software Verification Tool (Blast) from \cite{_mtc_2008}, Getafix from \cite{la_torre_analyzing_2009} and jMoped from \cite{somejMopedCite}. We can not get correct reachability results from Interproc and Blast, so we shift our focus onto Getafix and jMoped.
 
-\begin{mydef}
-Let $bitLength\in \left\{ {0,1,2,..., 32}\right\}$ and let $P$ be a function whose input $S \in \left\{ {0,1,2,..., 1\ll bitLength-1}\right\}$ and output $O \in \left\{ {0,1,2,..., 1\ll bitLength-1}\right\}$.
-\end{mydef}
+\renewcommand{\algorithmiccomment}[1]{// #1}
+\begin{algorithm}
+\begin{algorithmic}
 
-\section{Discovery by mistake}
-During the initial tests with the sanity check program of bit length 32, the program terminates in less than a minute and gives the correct output count. Later we time the execution of an empty loop from $0$ to $2^{32} - 1$ and the result is $10.30$ seconds, so theoretically the double loop would take a much longer time to terminate, longer than our test result with sanity check.  Listing \ref{lst:1stTry} shows the C code we used.
+\IF{value of $OCounter$ meets certain constrains}
+\STATE reach: $OCounter$
+\COMMENT{a label followed by a statement}
+\ENDIF
+
+\end{algorithmic}
+
+\caption[Single loop]{Determine if $OCounter$ meets certain constrains.}
+\label{alg:reachLine}
+\end{algorithm}
+
+\section{Getafix}
+\marginpar{Mostly copied from getafix website. Need rewrite}
+Getafix is a symbolic model checker for Boolean programs implemented in \cite{la_torre_analyzing_2009}. Getafix only supports reachability check. It translates sequential and concurrent Boolean programs into Boolean formulae and uses the model-checker Mucke to solve the reachability problem symbolically using Boolean Decision Diagrams \cite{_getafix_2009}. 
+
+\begin{figure}
+\centering
+\includegraphics[scale=0.8]{Figures/workFlow}
+\caption{Workflow of calculating information leakage with Getafix.}
+\label{fig:workFlow}
+\end{figure}
+
+\subsection{The converter}
+Input for Getafix are boolean programs, meaning it only supports binary variables which can be either 0 or 1. We represent our problem in c-style code, thus we need to translate it into boolean form. We implemented a converter to automate this process, and Figure \ref{fig:workFlow} shows the workflow we used to calculate information leakage using Getafix. The converter has three components, a parser, a built-in function generator and a piece of script which calls the first two components and assembles the output file. The converter has these properties:
+
+\begin{enumerate}
+\item The input to the converter is a c-style code file and a positive integer which represents the bit length. The converter supports 32 bits and less. Also note that the converter represents a number with bit length of $bitLength$ using $bitLength + 1$ bits. We do this so that we do not need to deal with the upper bound explicitly when writing a loop iterating from $0$ to $1<<bitLength - 1$.
+\item The output of the converter is a boolean program which follows the syntax of Getafix input file.
+\item In the language that we defined for the input file, we support only one variable type: non-negative decimal integer. Again we support the length up to 32 bits.
+\item Our converter does not support function definitions. The input file has two parts, variable declarations block and statements block. The parser will print these blocks into the main function of the output boolean program. Also we require all variable declarations to appear before statements in the input code. Getafix input syntax has this requirement, and we decide to keep it in our converter.
+\item We implement support for the following symbolic operators in the language: plus +, minus -, and \&, or $|$, xor \textasciicircum , greater than \textgreater, equal ==, less than \textless, not equal !=, greater than or equal \textgreater=, less than or equal \textless=, left shift \textless\textless and right shift \textgreater\textgreater.
+\item We implement support for three control statements: if...else, while loop, goto and statements with labels. We currently do not support for loop, do...while loop, switch statements, break and continue, but these statements can be easily expressed using the supported ones.
+\end{enumerate}
+
+Input to the parser is a c-style code file and a desired bit length. Output of the parser is its corresponding boolean program which follows the syntax of Getafix input file. First we define the syntax of the input code and second we create the parser using flex and bison. The parser scans the input code and builds a syntax tree. Then the parser prints the syntax tree as a boolean program. The parser has three points worth noting:
+
+\begin{table}[h]
+\caption{Examples of input and output of the parser, with bit length of 4}
+\label{tbl:parser-example}
+\begin{tabular}{|l|l|}
+\hline
+Input& Output  \\ \hline
+var SMax = 16;     & \begin{tabular}[c]{@{}l@{}}decl SMax4,SMax3,SMax2,SMax1,SMax0;\\ Smax4, SMax3, SMax2, SMax1, SMax1 := 1,0,0,0,0;\end{tabular} \\ \hline
+STemp = STemp - 5; & \begin{tabular}[c]{@{}l@{}}STemp4,STemp3,STemp2,STemp1,STemp0 := \\ minus(STemp4,STemp3,STemp2,STemp1,STemp0,0,0,1,0,1); \end{tabular} \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{enumerate}
+\item When printing the output code, the parser ``stretches'' each variable and literal into its binary form. Assume the desired bit length is $bitLength$. We split each variable into $bitLength$ variables by copying the name of the variable $bitLength$ times and appending a counter value to each one. Also we convert a literal to its corresponding binary value and prepend it with zeros to reach the desired length. Table \ref{tbl:parser-example} contains an example of how the parser deals with a variable declaration.
+\item In a boolean program, all operators operate on bit level, so we need to implement higher-level operators like plus, minus, greater than and left shift using operators that Getafix supports. In the parser, we print these high-level operators as function calls in the output boolean program, and the built-in function generator generates the body of the function. Table \ref{tbl:parser-example} also contains an example of how the parser deals with a high-level operator.
+\item In the boolean code syntax which Getafix defines, function call plus the semicolon is defined as a statement, and another rule allows the code to assign a function call to an identifier, but function call itself is not an expression. This means that a function call can not work as an expression as in many other languages, and it leads to two problems: First, the decider expressions in if...else and while statements can not contain function calls. Second, parameters of a function call or operands to an operator can not be a function call. We automated a solution in the parser to the first problem, which assigns the decider expression to a temporary variable and use that variable as the decider, so we can use the c-style if...else and while in the input code. For the second problem, a possible solution would be to manage a set of internal temporary variables and assign each function call to a variable, but we did not implement it.
+\end{enumerate}
+
+Input to the built-in function generator is a desired bit length. Output is a set of high-level operators like plus and left shift implemented as functions. We do not track the necessary functions in the parser, as experiments with Getafix indicate that the uncalled functions affect little on the execution time. Listing \ref{lst:isGT} shows a sample function by the generator.
 
 \lstset{language=C}  
-\begin{lstlisting}[caption={Initial implementation of the double loop with sanity check in C.},label=lst:1stTry]
-uint32_t S = 0;
-uint32_t O = 0;
-uint32_t SMax = S - 1;
-uint32_t OMax = O - 1;
-uint32_t OCounter = 0;
-uint32_t OTemp = 0;
-uint32_t base = 0;
-for (;O<OMax;O++){
-	for (;S<SMax;S++){
-		//program start here
-		if (S < 16)
-			OTemp = base + S;
-		else
-			OTemp = base;
-		//program end here
-		if (OTemp == O){
-			OCounter ++;
-			break;
-}	}	}
+\begin{lstlisting}[caption={Greater than operator as a function in boolean program with bit length of 2.},label=lst:isGT]
+bool isGT(left2,left1,left0,right2,right1,right0)
+begin
+if (left2 != right2) then
+	if (left2 = 1) then return 1; fi
+else 
+	if (left1 != right1) then
+		if (left1 = 1) then	return 1; fi
+	else 
+		if (left0 != right0) then
+			if (left0 = 1) then	return 1; fi
+fi	fi	fi
+return 0;
+end
 \end{lstlisting}
 
-Due to the large difference in actual execution time and the theoretical time, we decided to inspect the code for errors. Our code differs from Algorithm \ref{alg:doubleLoop} at two places: First, $S$ and $O$ can not reach $SMax$ and $OMax$ due to the use of $<$, thus the upper bound is not tested. Second, in the inner loop, we did not initialize $S$ to $0$ except for its first iteration. The first point does not affect the output count of the sanity check example as every $S$ greater than $16$ will lead to a $P(S)$ value of $base$ which is $0$. The second point is the cause of the large time difference, because essentially $P$ only executes once for each $S$, reaching a total of $2^{32}$ times, much smaller than the full double loop in which $P$ executes $2^{2 \times 32}$ times.
+Input to the third component, a piece of script, is a c-style code file and a desired bit length. Output of the script is a boolean program ready for Getafix to process. The script first passes the bit length to the built-in function generator and redirects its output to the output file. Then the script passes both the input to the parser and appends its output to the output file. At this point the output is complete.
 
-We found that removing the initialization of $S$ to $0$ can be a way to speed up some test cases, but not all. Specifically, program $P$ has to obey certain properties:
+\section {jMoped}
+\marginpar{need more explanation}
+jMoped is a model checker which checks for coverage in Java programs. The authors implemented it as a plug-in for eclipse, using its UI for parameters and output display. We rewrite our tests in Java so that we can use jMoped on them.
 
-\begin{enumerate}
-\item Function $P$ is monotonically increasing within range $[0, n]$.
-\item The output of function $P$ with $S$ in range $[0, n]$ has to start with zero and is continuous.
-\item Each output of function $P$ with $S$ in range $[n+1, 1\ll bitLength-1]$ can be produced by at least one $S$ in range $[0, n]$.
-\end{enumerate}
-
-\section{Improvements}
-The properties that $P$ has to follow in order for the optimization to work is rather strict. For example in the sanity check test, the optimization only works when $base$ is $0$. A possible solution would be to start $O$ at the lowest value $P$ can output, in essence pulling the function down on y axis so that it starts with $0$. However, this approach does not ease the restrictions.
-
-In our second attempt to improve this optimization method as shown in Listing \ref{lst:2ndTry}, we started with monotonicity and rearranged the architecture of the outer program. The problem is to count the number of outputs of a monotonically increasing function, and our solution is to iterate through the entire range of $S$ and keep track of the largest output value. If $P$ generates a value $OOut$ which is larger than the current largest value, then $OOut$ replaces that value and $OCounter$ increases. The properties that $P$ has to follow in order to use this optimization is:
-
-\marginpar{This is wrong. Correct this.}
-\begin{enumerate}
-\item Function $P$ is monotonically increasing within range $[n_{1}, n_{2}]$.
-\item Each output of function $P$ with $S$ in range $[n_{2}+1, 1\ll bitLength-1]$ can be produced by at least one $S$ in range $[n_{1}, n_{2}]$.
-\end{enumerate}
-
-So with the second attempt, we removed the requirement for $P$ to be continuous and start with $0$ from the first attempt.
+\section{Tests and results}
+Before we have the converter, we coded a few test cases manually and Getafix gave us the correct answers. Now with the converter we can run more complicated tests and see if Getafix is a good solution to the problem of calculating information leakage. As with jMoped, we rewrite the tests in Java. We decide to run the eight test cases from paper \cite{meng_calculating_2011}. In each test, $O$ represents the output of the test program, and $S$ is the input. Also in the tables, optimization refers to the final optimization in the previous chapter, and an empty cell means that we did not do this experiment.
+ 
+\subsection{Sanity check}
+Listing \ref{lst:sanity} shows the code we use. In this test, $O$ remains constant unless $S$ is within a certain range. The program has 16 different outputs, ranging from $4$ to $19$. We can use 
 
 \lstset{language=C}  
-\begin{lstlisting}[caption={Implementation of the optimization with sanity check in C.},label=lst:2ndTry]
-unsigned int S = 0;
-unsigned int SMax = 4294967295;
-unsigned int base =4;
-unsigned int STemp = S;
-unsigned int OTemp = 0;
-//program starts here
-if (STemp< 16){OTemp = base+ STemp;}
-else{OTemp = base;}
-//program ends here
-unsigned int OCounter = 1;
-unsigned int OMax = OTemp;
-S++; 
-while (S<= SMax){
-	STemp = S;
-	//program starts here
-	if(STemp < 16){OTemp = base+ STemp;	}
-	else{OTemp = base;}
-	//program ends here
-	if (OTemp > OMax ){
-		OMax = OTemp;
-		OCounter= OCounter+1;
-	}
-	if(S < SMax) S=S+1;
-	else break;
+\begin{lstlisting}[caption={Sanity check test program.},label=lst:sanity]
+var base = 4;
+if(S < 16){O = base+ S;}
+else{O = base;}
+\end{lstlisting}
+
+\begin{table}[htbp]
+\begin{tabular}{|l|l|l|l|l|}
+\hline
+bit length(bit) & getafix(s) & getafix optimized(s) & jmoped(s) & jmoped optimized(s) \\ \hline
+6 & 41.264 & {} & 9.322 & {} \\ \hline
+7 & 235.64 & 3.3775 & {62.074} & 0.53 \\ \hline
+8 & \textgreater 600 & 6.448 & {326.122} & 0.875 \\ \hline
+9 &  & 13.491 &  & 1.69 \\ \hline
+10 &  & 27.479 &  & 3.045 \\ \hline
+\end{tabular}
+\caption{Timing results for sanity check.}
+\label{tbl:sanity}
+\end{table}
+
+\subsection{Implict flow}
+
+\lstset{language=C}  
+\begin{lstlisting}[caption={Implict flow test program.},label=lst:implicit]
+O = 0;
+if(S == 0){O = 0;}
+else{if(S == 1){O = 1;}
+	else{if(S == 2){O = 2;}
+		else{if(S == 3){O = 3;}
+			else{if(S == 4){O = 4;}
+				else{if(S == 5){O = 5;}
+					else{if(S == 6){O = 6;}
+	}	}	}	}	}	}
+\end{lstlisting}
+
+\begin{table}[htbp]
+\begin{tabular}{|l|l|l|l|l|}
+\hline
+{bit length(bit)} & getafix(s) & {getafix opt(s)} & jmoped(s) & {jmoped opt(s)} \\ \hline
+6 & {58.834} & {} & {11.865} & {} \\ \hline
+7 & {289.919} & 8.2645 & {63.555} & 0.575 \\ \hline
+8 & \textgreater 600 & 22.6435 & {325.755} & 0.965 \\ \hline
+9 &  & 61.464 &  & 1.86 \\ \hline
+10 &  & 182.1295 &  & 3.57 \\ \hline
+\end{tabular}
+\caption{Timing results for implicit flow.}
+\label{tbl:implicit}
+\end{table}
+
+\subsection{Mix and duplicate}
+
+\lstset{language=C}  
+\begin{lstlisting}[caption={Mix and duplicate test program at 8 bits.},label=lst:mix]
+O = ((S >> 4) ^ S) & 15;
+O = O | O << 4;
+\end{lstlisting}
+
+\begin{table}[htbp]
+\begin{tabular}{|l|l|l|l|l|}
+\hline
+{bit length(bit)} & getafix(s) & {getafix opt(s)} & jmoped(s) & {jmoped opt(s)} \\ \hline
+4 & {2.7185} & 0.9825 & {1.14} & 0.375 \\ \hline
+6 & {44.728} & 3.719 & {32.94} & 0.63 \\ \hline
+8 & \textgreater 600 & 32.931 & eclipse terminates 1 & 1.97 \\ \hline
+10 &  & {Memory allocation failed} &  & 9.765 \\ \hline
+\end{tabular}
+\caption{Timing results for mix and duplicate.}
+\label{tbl:mix}
+\end{table}
+
+\subsection{Masked copy}
+
+\lstset{language=C}  
+\begin{lstlisting}[caption={Masked copy test program at 8 bits.},label=lst:masked]
+O = S & 240;
+\end{lstlisting}
+
+\begin{table}[htbp]
+\begin{tabular}{|l|l|l|l|l|}
+\hline
+{bit length(bit)} & getafix(s) & {getafix opt(s)} & jmoped(s) & {jmoped opt(s)} \\ \hline
+4 & 1.728 & 0.7515 & 0.605 & 0.23 \\ \hline
+6 & 38.2435 & 1.3855 & 10.29 & 0.345 \\ \hline
+8 & \textgreater 600 & 5.254 & 320.87 & 0.81 \\ \hline
+10 &  & 39.1355 &  & 2.445 \\ \hline
+\end{tabular}
+\caption{Timing results for masked copy.}
+\label{tbl:masked}
+\end{table}
+
+\subsection{Binary search}
+
+\lstset{language=C}  
+\begin{lstlisting}[caption={Binary search test program at 8 bits.},label=lst:bin]
+if(O + 128 <= S){O = O + 128;}
+if(O + 64 <= S){O = O + 64;}
+if(O + 32 <= S){O = O + 32;}
+if(O + 16 <= S){O = O + 16;}
+\end{lstlisting}
+
+\begin{table}[htbp]
+\begin{tabular}{|l|l|l|l|l|}
+\hline
+{bit length(bit)} & getafix(s) & {getafix opt(s)} & jmoped(s) & {jmoped opt(s)} \\ \hline
+4 & 3.3590 & 1.094 & 0.905 & 0.330 \\ \hline
+6 & 136.0740 & 5.947 & 28.255 & 0.635 \\ \hline
+8 & \textgreater 600 & 65.235 & eclipse error & 2.315 \\ \hline
+10 &  & \textgreater 600 &  & 13.530 \\ \hline
+\end{tabular}
+\caption{Timing results for binary search.}
+\label{tbl:bin}
+\end{table}
+
+\subsection{Electronic purse}
+
+\lstset{language=C}  
+\begin{lstlisting}[caption={Electronic purse test program.},label=lst:electronic]
+O = 0;
+while(S >= 5){
+	S = S - 5;
+	O = O + 1;
 }
 \end{lstlisting}
+
+\begin{table}[htbp]
+\begin{tabular}{|l|l|l|l|l|}
+\hline
+{bit length(bit)} & getafix(s) & {getafix opt(s)} & jmoped(s) & {jmoped opt(s)} \\ \hline
+{6} & {10.411} & {2.7805} & {1.7} & {0.305} \\ \hline
+\end{tabular}
+\caption{Timing results for electronic purse.}
+\label{tbl:electronic}
+\end{table}
+
+\subsection{Sum query}
+
+\lstset{language=C}  
+\begin{lstlisting}[caption={Sum query test program.},label=lst:sum]
+O = S1 + S2 + S3;
+\end{lstlisting}
+
+\begin{table}[htbp]
+\begin{tabular}{|l|l|l|l|l|}
+\hline
+{bit length(bit)} & getafix(s) & {getafix opt(s)} & jmoped(s) & {jmoped opt(s)} \\ \hline
+6 & 225.3995 & 33.488 & 21.115 & 2.595	\\ \hline
+\end{tabular}
+\caption{Timing results for sum query.}
+\label{tbl:sum}
+\end{table}
