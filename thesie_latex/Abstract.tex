@@ -5,6 +5,14 @@
 \centerline{\bf \large ABSTRACT}
 \vskip 10mm 
 
+A confidential program should not allow any information about its secret inputs to be inferred from its public outputs. As such confidentiality is difficult to achieve in practice, it has been proposed in literature to evaluate security of programs by computing the amount of information it leaks. In this thesis, we consider the problem of computing information leaked by a deterministic program and use the information-theoretic measure of min-entropy to quantify the amount of information.
+
+The main challenge in computing information leakage by a program using min-entropy is that one has to count the number of distinct outputs by that program. We find a polynomial-time reduction from the problem of counting outputs to the problem of checking safety in programs. Thus we propose a hypothesis that we can estimate leakage using model checking tools which are originally developed for checking safety.
+
+We test the above hypothesis using two popular model checking tools, JMoped and Getafix. Our tests indicate that they do not scale as the number of bits in the input increases. However, we find that if the program enjoys the additional property of monotonicity then we can use a different reduction to the problem of checking safety. We observe a dramatic improvement in performance with this new reduction.
+
+\iffalse
+
 A \emph{confidential} program should not allow \emph{any} information about its secret inputs to be inferred from its public outputs.  As such confidentiality is difficult to achieve in practice, it has been proposed in literature to evaluate security of programs by computing the \emph{amount} of information leaked. %(a low amount of information leakage is desirable). 
 We consider the problem of \emph{computing} 
 information leaked by a deterministic  program  when the information-theoretic measure of \emph{min-entropy} is used to quantify the amount of information. 
@@ -18,5 +26,6 @@ in the input increases.  However, we show that if the program $P$ enjoys the add
 %if for each pair of $n$-bit  binary numbers $s_1, s_2$  such that  $s_1\leq s_2,$ we have that %$P_{func}(s_1) \leq P_{func}(s_2).$ 
 We observe a dramatic improvement in the performance with this new reduction.
 
+\fi
 
   
