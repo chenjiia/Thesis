@@ -1,4 +1,110 @@
+% !TEX root = ThesisMaster.tex
+
+
 \chapter{Introduction}
 	\label{CH_Intro}
 
-Introduce the reader to the current problem that you wish to solve, and why anyone should care about it.
+A desirable property for a program is \emph{non-interference}~\cite{GougenMeseguer,Reynolds} which informally says that a program should  never leak  any information about its secret inputs. Formally, \emph{non-interference}~\cite{GougenMeseguer,Reynolds}
+ says that that the \emph{low-security observations} of the executions of a program must be independent of secret inputs. However, the desired functionality of a program usually makes non-interference unachievable. For example, a password checker behaves differently on a correct password and an incorrect password   (and its behavior even depends on the number of incorrect passwords
+entered).   Therefore,  many authors~\cite{Denning,Gray,Millen,Smith} have proposed to evaluate security of programs by  quantifying the amount of information leaked. How do we measure the amount of information leaked? How to compute the information leaked?
+
+
+For measuring the amount of information leaked by programs, information-theoretic measures are often used. In this approach, a program is modeled as an information channel that  {transforms} a random variable taking values from the set of confidential inputs into a random variable taking values from the set of public outputs.  Then information-theoretic measures are used to quantify the adversary's initial certainty about the secret inputs and  the  uncertainty remaining in the secret inputs after the adversary observes  the execution.
+ The amount of information leaked by the program is the difference between the two. While, many information-theoretic measures can be used, it has been argued that leakage based on min-entropy is appropriate to security applications~\cite{Smith}.   Intuitively, leakage based on min-entropy measures vulnerability of the secret inputs to a \emph{single} guess of the adversary who observes the program execution.
+ 
+
+Even though quantifying information leaked in programs is appealing, it is however not easy to compute information leaked in programs. Indeed it is known that the decision problem of checking whether information leaked  in non-recursive boolean programs is equal to (or less than) a given rational number is  {\PSpace}-complete~\cite{Jp2,Jp3,POST,Krish}. Recall that 
+ {\PSpace} is the class of decision problems that can be solved by Turing machines that accesses at most a  polynomial number of cells on its working tape and that this class includes {\textsf{NP}} decision problems. 
+ 
+ 
+ 
+
+In order to measure the information leaked by a program $P$ using min-entropy, one has to count the number of different possible outputs that may be achieved when the program is run with different inputs. The amount of information leaked is the binary logarithm of this number, 
+Now, if the  input to the program $P$ consists of $n$-bits, this quantity can be computed by running the program on each of the  $2^n$ different inputs and remembering the outputs observed on each of the different inputs. %Since different inputs can lead to different outputs, this naive algorithm can take $O(2^n)$-additional space.
+This naive algorithm has exponential time and exponential space complexity.  The same computation can be actually carried out in polynomial additional space by using nested iteration.
+The outer iteration ranges over  all possible outputs and checks if there is an input that leads to that particular output by iterating over all possible inputs. Hence, in this alternative algorithm, the program has to be run $2^{2n}$ times.  The latter observation  immediately leads to the result that  the decision problem of checking whether information leaked  in non-recursive boolean programs is  equal to (or less than) a given rational number in {\PSpace}. Indeed, the latter algorithm provides an immediate polynomial-time reduction to the problem of checking whether the program counter reaches a given location in a program, which is also known to be {\PSpace}-complete.  
+
+
+Now, both the above algorithms for computing information leaked have exponential running time and hence they do not scale very well as $n$, the number of input bits increase.  However, it has been suggested in 
+~\cite{POST} that one can potentially exploit the  reduction to the reachability problem in order to estimate the amount of information leaked by using modelchecking tools as modelchecking tools were originally developed for checking whether a particular state in a program is reachable (on any possible input).
+
+
+
+
+  %have been has been successful in 
+
+
+%Several modelchecking tools have been developed that automatically check whether a particular line in a program is reachable.  
+
+
+
+
+
+
+
+%Surprisingly, when Boolean deterministic programs contain loops, computing information leakage becomes {PSpace}-complete~\cite{Jp2,Jp3,POST,Krish}, for both
+%min-entropy and Shannon entropy. Although this is same complexity as checking safety of Boolean programs (or equivalently, reachability),  the decision procedures given in~\cite{Jp2,Jp3,POST,Krish} do not seem to be feasible in practice.  Instead, when computing information leakage, researchers have developed heuristics to exploit reachability tools to compute the amount of information leaked. The reachability tools employed come from model checking \cite{BackesKopf,Kopf,Kostas07,Kostas08}, static analysis \cite{clark94,clark05,clark07,BackesKopf}, SMT solvers~\cite{Plas11}, and statistical analysis \cite{Kopf,Chothia}. 
+
+
+
+%\paragraph{Contributions.}
+%We consider the problem of evaluating the amount of information leaked by the public outputs of a Boolean program with uniformly distributed secret inputs. 
+%We exploit symbolic model-checking techniques to achieve our goals. More precisely,  we demonstrate how model checkers based on Binary Decision Diagrams (BDDs) can very easily be enhanced to  compute information leakage. 
+%As we shall see shortly, our approach is informed by the model-checking algorithms used by these tools.   
+%
+%
+%BDDs~\cite{lee,akers,Bry86} are data structures used to store Boolean functions\footnote{Boolean functions are  functions that take values in the set $\set{0,1}$.} with finite domain. Their efficiency has led to many applications in  program verification.
+%Broadly, in this approach, the program is viewed as a transition system in which a configuration contains the current line number and the values of the variables.
+%Transitions are encoded as BDDs, and reachability can be encoded as the least fixed-point solution to a set of Boolean equations.
+%This solution is the result of a fixed-point iteration with efficient BDD operations.
+%For certain BDD-based tools, notably for pushdown systems 
+%\cite{BR00,moped}, 
+%this fixed-point computation yields the relation between the values of global variables at the start of the program and the values of the global variables when the queried location is reached.
+%By  querying the exit point of the program, we can thus compute the relation between the inputs and the  outputs of the  program, henceforth referred to as the \emph{summary} of the program. 
+%
+%Our key observation is that this summary (which is given as a BDD) is indeed all the information we need to quantify information leakage. We give symbolic algorithms that extract information leakage from the summary 
+%%(See Figure~\ref{fig:min} and Figure~\ref{fig:shannon})\todo{Non need to give reference to figures in the intro}
+%according to either Shannon entropy or min-entropy.
+%This approach is appealing because these algorithms can be easily plugged into existing BDD-based model-checking tools. 
+%
+%We validate this approach by implementing\footnote{The tool implementing the algorithms for entropy calculations is available for download at
+%our algorithms in moped~\cite{moped}, a BDD-based symbolic model checker that %supports recursion and 
+%checks for assertion errors modeled as
+%reachability problems. Apart from providing support for Boolean data, \moped{} also supports %complex data types such as 
+%integers of variable length, arrays, and C-like structures. Our experience with these implementations are promising, as the computation of information leakage 
+%(for both min-entropy and Shannon-entropy) comes with little overhead over the reachability computation. Although, \moped{} supports recursion also, we currently provide support only for non-recursive programs. 
+%
+%We then turn our attention to probabilistic programs. For  probabilistic non-recursive programs, we need to 
+%compute, for each possible input-output pair $(i,o)$, the conditional probability that the program outputs $o$ when the input is $i$. We compute these quantities as the least fixed-point solution to a system of \emph{linear equations}~\cite{Marta-book}. 
+%%\todo{Missing ref.  Is it "Model checking of recursive probabilistic systems." by Etessami et. al. ? NO, this is Marta's book and some older papers}. 
+%Many probabilistic model checkers such as \cite{prism} do this computation using Algebraic Decision Diagrams (ADDs)~\cite{ADD}, a generalization of BDDs. The summary for probabilistic programs now encodes the required conditional probabilities, and we construct  symbolic algorithms to extract the leaked information from the computed summary. % (see Figure~\ref{fig:min1} and Figure~\ref{fig;shannon1}) \todo{Missing refs}.
+%We validate this approach by first extending the ability of \moped{} to compute the summary for probabilistic non-recursive  programs and then implementing the symbolic algorithms 
+%for computing the information leakage. Once again,  this computation comes with little overhead over the reachability computation.
+%
+%
+% 
+%%The rest of the paper is organized as follows. We introduce relevant notation and definitions in Section~\ref{sec:prelim}. We give our symbolic algorithms for computing information leaked in deterministic programs in Section~\ref{sec:leak}. We detail our experimental evaluation of leakage in Section~\ref{sec:experiment}. 
+%%We give our symbolic algorithms for computing  leakage in probabilistic programs in Section~\ref{sec:experiment}.
+%%We conclude in Section~\ref{sec:concs}. 
+%
+%
+%\paragraph{Related work.}
+%%\label{sec:related}
+%%The \emph{complexity} of computing the amount of leakage in Boolean programs has been   considered recently in~\cite{Jp1,Jp2,Jp3,Krish,rch:mu:fsttcs2012,Krish,POST}. 
+%In recent years, several automated approaches from model checking \cite{BackesKopf,Kopf,Kostas07,Kostas08}, static analysis \cite{clark94,clark05,clark07,BackesKopf}, and statistical analysis \cite{Kopf,Chothia}  have been employed to compute information leakage. Of these, the most closely related works are the works of \cite{BackesKopf}
+%and ~\cite{Plas11}.
+%
+%The problem of automatically computing information flow was first tackled in \cite{BackesKopf}. This approach iteratively constructs equivalence classes on inputs: two inputs are said to be equivalent if they lead to the same output. One starts with a single equivalence class and progressively refines when these inputs lead to different outputs.
+%At each step, the equivalence relation is characterized using logical formulas and refined using experimental runs of the program.
+%Once a fixed point is reached, they use the size of the resulting equivalence classes to compute information leakage.
+%This technique is optimized in \cite{Kopf}, where
+%statistical techniques are used to estimate the equivalence classes. 
+%
+%SMT solvers are used in~\cite{Plas11} to estimate min-entropy leakage in Boolean programs. Since min-entropy leakage of deterministic  programs is determined by the number of different feasible outputs, they estimate min-entropy leakage by estimating an upper bound on  the number of feasible outputs. Concretely, they compute, using SMT solvers, how many different values each pair of output bits can take. This technique only yields an upper bound, and it is easy to construct examples where this upper bound is far from the correct value. Our techniques in contrast yield exact values. It is also not clear how their technique can be extended to computing information leakage based on Shannon entropy.
+%
+%For probabilistic programs, the use  of model-checking to compute information leakage based on Shannon entropy has been explored in~\cite{Kostas07,Kawa,legay}. Please note that the models considered in these papers are more general as they also allow for other observations than just the outputs at the end of the program execution. \cite{Kostas07} uses \cite{prism} to get the conditional probabilities of observing outputs given inputs and then computes the information leakage by hand, ~\cite{Kawa} implements an explicit state model-checking algorithm, and ~\cite{legay} computes the information leakage using (forward) symbolic executions. 
+%
+%
+%
+%
+%Introduce the reader to the current problem that you wish to solve, and why anyone should care about it.
