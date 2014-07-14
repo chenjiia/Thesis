@@ -1,4 +1,13 @@
-\chapter{Summary and concluding remarks}
+\chapter{Conclusion and future works}
 	\label{CH_summary}
 
-Congratulations on completing your dissertation.
+In this thesis we showed a novel approach of using model checking tools to compute information leakage. The principal idea is to wrap the program to be tested in a loop which counts the number of outputs it has, and instead of directly executing the whole code, we append an if statement with the counter as its condition and apply a model checking tool to check for reachability of the statement within if. We think that this approach may be faster than direct execution.
+
+Our main work divides into three parts:
+\begin{enumerate}
+\item We wrote a converter which converts C-style code into boolean program, which is the input Getafix requires. Later we used the converter on all the seven test cases and it saved us a lot of time on coding the tests. 
+\item We came up with an optimization method which can 
+\item We tested the seven programs on both Getafix and jMoped with different bit lengths.
+\end{enumerate}
+
+We found that 

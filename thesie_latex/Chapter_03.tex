@@ -1,14 +1,8 @@
-\chapter{Monotonic programs}
+\chapter{Semi-monotonic programs}
 	\label{CH_03}
 % should use past tense
 
-In this chapter we describe our discovery that if the test program $P$ meets a certain property, then we can execute the program in a loop and get a direct output count in a reasonable time.
-
-Need to insert somewhere else.
-
-\begin{mydef}
-Let $bitLength\in \left\{ {0,1,2,..., 32}\right\}$ and let $P$ be a function whose input $S \in \left\{ {0,1,2,..., 1\ll bitLength-1}\right\}$ and output $O \in \left\{ {0,1,2,..., 1\ll bitLength-1}\right\}$.
-\end{mydef}
+In this chapter we describe our discovery that if the test program $P$ meets a certain property, then we can use a different wrapping loop and greatly reduce the time Getafix and jMoped needs to check for reachability.
 
 \section{Discovery by mistake}
 During the initial tests with the sanity check program of bit length 32, the program terminates in less than a minute and gives the correct output count. Later we time the execution of an empty loop from $0$ to $2^{32} - 1$ and the result is $10.30$ seconds, so theoretically the double loop would take a much longer time to terminate, longer than our test result with sanity check.  Listing \ref{lst:1stTry} shows the C code we used.
@@ -49,7 +43,7 @@ We found that removing the initialization of $S$ to $0$ can be a way to speed up
 \section{Improvements}
 The properties that $P$ has to follow in order for the optimization to work is rather strict. For example in the sanity check test, the optimization only works when $base$ is $0$. A possible solution would be to start $O$ at the lowest value $P$ can output, in essence pulling the function down on y axis so that it starts with $0$. However, this approach does not ease the restrictions.
 
-In our second attempt to improve this optimization method as shown in Listing \ref{lst:2ndTry}, we started with monotonicity and rearranged the architecture of the outer program. The problem is to count the number of outputs of a monotonically increasing function, and our solution is to iterate through the entire range of $S$ and keep track of the largest output value. If $P$ generates a value $OOut$ which is larger than the current largest value, then $OOut$ replaces that value and $OCounter$ increases. The properties that $P$ has to follow in order to use this optimization is:
+In our second attempt to improve this optimization method as shown in Listing \ref{lst:2ndTry}, we started with monotonicity and rearranged the architecture of the outer program. The problem is to count the number of outputs of a monotonically increasing function, and our solution is to iterate through the entire range of $S$ and keep track of the highest output value. If $P$ generates a value $OOut$ which is larger than the current largest value, then $OOut$ replaces that value and $OCounter$ increases. The properties that $P$ has to follow in order to use this optimization is:
 
 \begin{enumerate}
 \item Set the range of $n$ to $[0, 2^{bitLength}-2]$.

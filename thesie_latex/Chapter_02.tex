@@ -6,8 +6,15 @@ The introduction counts as chapter 1.  This page shows how the bulk of your thes
 
 \section{Information leak}
 +\input{min}
-\section{Two intuitive solutions}
-To count the number of outputs of a program, we come up with two approaches: 
+
+
+\section{The problem and two intuitive solutions}
+We define a program $P$ as follows:
+\begin{mydef}
+Let $bitLength\in \left\{ {0,1,2,..., 32}\right\}$ and let $P$ be a function whose input $S \in \left\{ {0,1,2,..., 1\ll bitLength-1}\right\}$ and output $O \in \left\{ {0,1,2,..., 1\ll bitLength-1}\right\}$.
+\end{mydef}
+
+And we need to count the number of outputs of $P$. We come up with two approaches: 
 
 \begin{enumerate}
 \item Put the program in a double loop and count the number of outputs. The outer loop is for possible outputs and the inner loop is for inputs. When the program in the inner loop produces an output which matches the outer loop, counter increases.
@@ -103,12 +110,12 @@ In Algorithm \ref{alg:singleLoop}, we create a bit array with size equal to the 
 
 In Algorithm \ref{alg:singleLoop} except for the array we have 7 variables using $7 \times bitLength + 1$ bits memory. The array $OHit[]$ is of size $2^{bitLength} \times 1$ bits making a total of $2^{bitLength} + 7 \times bitLength + 1$ bits at $2^{O(bitLength})$. As with execution time, we assume program $P$ takes $t(P)$ seconds to execute, and the execution time for the single loop is $2^{bitLength} \times t(P)$. Thus the time complexity is $(2^{O(bitLength)}) \times t(P)$.
 
-\marginpar{if this is not hard we need reasons not doing this..}
 We set the bit length to $32$. In array $OHit[]$, each element is $1$ bit and the number of elements is $2^{32}$. The total memory usage for this array is $2^{32} \times 1$ bits, which is $0.5$ gigabytes. To our knowledge, it is neither difficult nor expensive to build a PC with more than 16 gigabytes of memory, and we can get such a PC off-the-shelf from top gaming PC brands like Alienware. However, as this memory requirement grows exponentially, adding five or six bits to the bit length and the requirement will exceed the capacity of current PCs.
 
 \subsection{Comparison and our choice}
+Table \ref{tbl:execTime} and \ref{tbl:memReq} show a comparison on execution time and memory usage respectively for these two approaches. The single loop and array approach has exponential growth for both time and memory, while the double loop approach has exponential growth for time but linear growth for memory, so we choose the double loop approach. 
 
-\begin{table}[htbp]
+\begin{table}
 \begin{tabular}{|l|l|l|}
 \hline
  & Execution time & Growth  \\ \hline
@@ -116,11 +123,11 @@ Double loop & $2^{2 \times bitLength} \times t(P)$ & $\times 4$  \\ \hline
 Single loop \& array & $2^{bitLength} \times t(P)$ & $\times 2$		\\ \hline
 \end{tabular}
 \caption{Comparison of the two approaches on execution time and their growth. $t(P)$ is the execution time of the program within the loop.}
-\label{}
+\label{tbl:execTime}
 \end{table}
 
 
-\begin{table}[htbp]
+\begin{table}
 \begin{tabular}{|l|l|l|}
 \hline
  & Memory requirement(bits) & Growth \\ \hline
@@ -128,5 +135,5 @@ Double loop & $7 \times bitLength + 1$ & +7 \\ \hline
 Single loop \& array & $2^{bitLength} + 7 \times bitLength + 1$ & $+ 2^{bitLength} + 7$ \\ \hline
 \end{tabular}
 \caption{Comparison of the two approaches on memory requirement and their growth.}
-\label{}
+\label{tbl:memReq}
 \end{table}
