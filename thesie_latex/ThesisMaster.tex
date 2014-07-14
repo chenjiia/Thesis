@@ -24,7 +24,10 @@
 
 \usepackage{amsthm}
 \newtheorem{mydef}{Definition}
+\newcommand{\PSpace}{\textsf{PSPACE}}
 
+
+\newcommand{\set}[1]{\{ #1 \}}
 % Optional - link table of contents entries and citations
 % LOAD THIS PACKAGE LAST!!! (Last of all usepackage commands)
 % Feel free to change link colors
@@ -84,7 +87,8 @@
 
 \addtocontents{toc}{\bigskip \textbf{APPENDIX}\par}
 \input{Appendix}
-\input{Bibliography}
+\bibliographystyle{plain}
+\bibliography{qflow}
 \input{Vita}
 
 \end{document}
