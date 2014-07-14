@@ -106,13 +106,27 @@ In Algorithm \ref{alg:singleLoop} except for the array we have 7 variables using
 \marginpar{if this is not hard we need reasons not doing this..}
 We set the bit length to $32$. In array $OHit[]$, each element is $1$ bit and the number of elements is $2^{32}$. The total memory usage for this array is $2^{32} \times 1$ bits, which is $0.5$ gigabytes. To our knowledge, it is neither difficult nor expensive to build a PC with more than 16 gigabytes of memory, and we can get such a PC off-the-shelf from top gaming PC brands like Alienware. However, as this memory requirement grows exponentially, adding five or six bits to the bit length and the requirement will exceed the capacity of current PCs.
 
+\subsection{Comparison and our choice}
+
 \begin{table}[htbp]
-\begin{tabular}{|l|l|l|l|l|}
+\begin{tabular}{|l|l|l|}
 \hline
- & Execution time & Growth & Memory requirement & Growth \\ \hline
-Double loop & & *4 &  &  \\ \hline
-Single loop \& array &  &  &  &  \\ \hline
+ & Execution time & Growth  \\ \hline
+Double loop & $2^{2 \times bitLength} \times t(P)$ & $\times 4$  \\ \hline
+Single loop \& array & $2^{bitLength} \times t(P)$ & $\times 2$		\\ \hline
 \end{tabular}
-\caption{}
+\caption{Comparison of the two approaches on execution time and their growth. $t(P)$ is the execution time of the program within the loop.}
+\label{}
+\end{table}
+
+
+\begin{table}[htbp]
+\begin{tabular}{|l|l|l|}
+\hline
+ & Memory requirement(bits) & Growth \\ \hline
+Double loop & $7 \times bitLength + 1$ & +7 \\ \hline
+Single loop \& array & $2^{bitLength} + 7 \times bitLength + 1$ & $+ 2^{bitLength} + 7$ \\ \hline
+\end{tabular}
+\caption{Comparison of the two approaches on memory requirement and their growth.}
 \label{}
 \end{table}
