@@ -47,7 +47,7 @@ Input for Getafix are boolean programs, meaning it only supports binary variable
 
 Input to the parser is a c-style code file and a desired bit length. Output of the parser is its corresponding boolean program which follows the syntax of Getafix input file. First we define the syntax of the input code and second we create the parser using flex and bison. The parser scans the input code and builds a syntax tree. Then the parser prints the syntax tree as a boolean program. The parser has three points worth noting:
 
-\begin{table}[h]
+\begin{table}
 \caption{Examples of input and output of the parser, with bit length of 4}
 \label{tbl:parser-example}
 \begin{tabular}{|l|l|}
@@ -67,7 +67,7 @@ STemp = STemp - 5; & \begin{tabular}[c]{@{}l@{}}STemp4,STemp3,STemp2,STemp1,STem
 Input to the built-in function generator is a desired bit length. Output is a set of high-level operators like plus and left shift implemented as functions. We do not track the necessary functions in the parser, as experiments with Getafix indicate that the uncalled functions affect little on the execution time. Listing \ref{lst:isGT} shows a sample function by the generator.
 
 \lstset{language=C}  
-\begin{lstlisting}[caption={Greater than operator as a function in boolean program with bit length of 2.},label=lst:isGT]
+\begin{lstlisting}[float=h, caption={Greater than operator as a function in boolean program with bit length of 2.},label=lst:isGT]
 bool isGT(left2,left1,left0,right2,right1,right0)
 begin
 if (left2 != right2) then
@@ -112,7 +112,7 @@ And the software specifications are:
 Listing \ref{lst:sanity} shows the code we use. In this test, $O$ remains constant unless $S$ is within a certain range. The program has 16 different outputs, ranging from $4$ to $19$. We can use the optimization in this test, and the timing results are in Table \ref{tbl:sanity}.
 
 \lstset{language=C}  
-\begin{lstlisting}[caption={Sanity check test program.},label=lst:sanity]
+\begin{lstlisting}[float=h, caption={Sanity check test program.},label=lst:sanity]
 var base = 4;
 if(S < 16){O = base+ S;}
 else{O = base;}
@@ -136,7 +136,7 @@ bit length(bit) & getafix(s) & getafix optimized(s) & jmoped(s) & jmoped optimiz
 Listing \ref{lst:implicit} shows the code. This test copies the value of $S$ to $O$ indirectly through the if statement when $S$ is less than $7$. For other $S$ values, $O$ is $0$. The program has 7 different outputs, ranging from $0$ to $6$. We can use the optimization in this test, and the timing results are in Table \ref{tbl:implicit}.
 
 \lstset{language=C}  
-\begin{lstlisting}[caption={Implict flow test program.},label=lst:implicit]
+\begin{lstlisting}[float=h, caption={Implict flow test program.},label=lst:implicit]
 O = 0;
 if(S == 0){O = 0;}
 else{if(S == 1){O = 1;}
@@ -166,7 +166,7 @@ else{if(S == 1){O = 1;}
 Listing \ref{lst:mix} shows the code. This test first calculates the XOR value of the two halves of $S$ (mix) and second duplicates this XOR value twice in $O$ (duplicate). The output count depends on the bit length, and at $8$ bits, it has $2^{4} = 16$ different outputs. We can use the optimization in this test, and the timing results are in Table \ref{tbl:mix}.
 
 \lstset{language=C}  
-\begin{lstlisting}[caption={Mix and duplicate test program at 8 bits.},label=lst:mix]
+\begin{lstlisting}[float=h, caption={Mix and duplicate test program at 8 bits.},label=lst:mix]
 O = ((S >> 4) ^ S) & 15;
 O = O | O << 4;
 \end{lstlisting}
@@ -188,7 +188,7 @@ O = O | O << 4;
 Listing \ref{lst:masked} shows the code. In this test, $O$ is $S$ with its lower half set to $0$, or ``masked'' out. The output count depends on the bit length, and at $8$ bits, it has $2^{4} = 16$ different outputs. We can use the optimization in this test, and the timing results are in Table \ref{tbl:masked}.
 
 \lstset{language=C}  
-\begin{lstlisting}[caption={Masked copy test program at 8 bits.},label=lst:masked]
+\begin{lstlisting}[float=h, caption={Masked copy test program at 8 bits.},label=lst:masked]
 O = S & 240;
 \end{lstlisting}
 
@@ -209,7 +209,7 @@ O = S & 240;
 Listing \ref{lst:bin} shows the code. This test leaks the upper half of $S$ to $O$ through binary search. The output count depends on the bit length, and at $8$ bits, it has $2^{4} = 16$ different outputs. We can use the optimization in this test, and the timing results are in Table \ref{tbl:bin}.
 
 \lstset{language=C}  
-\begin{lstlisting}[caption={Binary search test program at 8 bits.},label=lst:bin]
+\begin{lstlisting}[float=h, caption={Binary search test program at 8 bits.},label=lst:bin]
 if(O + 128 <= S){O = O + 128;}
 if(O + 64 <= S){O = O + 64;}
 if(O + 32 <= S){O = O + 32;}
@@ -233,7 +233,7 @@ if(O + 16 <= S){O = O + 16;}
 Listing \ref{lst:electronic} shows the code. Assume $S$ is the account balance, we set the deduction to $5$, and output $O$ represents the number of times one can debit such an amount.  In this test we set $SMax$ to $19$,and the program has $4$ outputs, ranging from $0$ to $3$. We can use the optimization in this test, and the timing results are in Table \ref{tbl:electronic}.
 
 \lstset{language=C}  
-\begin{lstlisting}[caption={Electronic purse test program.},label=lst:electronic]
+\begin{lstlisting}[float=h, caption={Electronic purse test program.},label=lst:electronic]
 O = 0;
 while(S >= 5){
 	S = S - 5;
@@ -255,7 +255,7 @@ while(S >= 5){
 Listing \ref{lst:sum} shows the code. This test leaks the sum of its three inputs to $O$. We set $S1, S2$ and $S3$ to be less than $10$, so the program has $28$ outputs ranging from $0$ to $27$. We can use the optimization in this test, and the timing results are in Table \ref{tbl:sum}.
 
 \lstset{language=C}  
-\begin{lstlisting}[caption={Sum query test program.},label=lst:sum]
+\begin{lstlisting}[float=h, caption={Sum query test program.},label=lst:sum]
 O = S1 + S2 + S3;
 \end{lstlisting}
 

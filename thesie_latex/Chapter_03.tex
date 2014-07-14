@@ -8,7 +8,7 @@ In this chapter we describe our discovery that if the test program $P$ meets a c
 During the initial tests with the sanity check program of bit length 32, the program terminates in less than a minute and gives the correct output count. Later we time the execution of an empty loop from $0$ to $2^{32} - 1$ and the result is $10.30$ seconds, so theoretically the double loop would take a much longer time to terminate, longer than our test result with sanity check.  Listing \ref{lst:1stTry} shows the C code we used.
 
 \lstset{language=C}  
-\begin{lstlisting}[caption={Initial implementation of the double loop with sanity check in C.},label=lst:1stTry]
+\begin{lstlisting}[float, caption={Initial implementation of the double loop with sanity check in C.},label=lst:1stTry]
 uint32_t S = 0;
 uint32_t O = 0;
 uint32_t SMax = S - 1;
@@ -65,7 +65,7 @@ In our second attempt to improve this optimization method as shown in Listing \r
 So with the second attempt, we removed the requirement for $P$ to be continuous and start with $0$ from the first attempt.
 
 \lstset{language=C}  
-\begin{lstlisting}[caption={Implementation of the optimization with sanity check in C.},label=lst:2ndTry]
+\begin{lstlisting}[float, caption={Implementation of the optimization with sanity check in C.},label=lst:2ndTry]
 unsigned int S = 0;
 unsigned int SMax = 4294967295;
 unsigned int base =4;
