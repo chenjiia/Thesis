@@ -1,0 +1,45 @@
+% !TEX root =  ThesisMaster.tex
+
+\newcommand{\calC} {\mathcal{C}}
+
+
+We briefly recall the mathematical theory behind computation of information leakage in programs. 
+For computing information leakage, a program is usually considered as an information-theoretic channel between its inputs and outputs. Formally, 
+\begin{mydef}
+An information-theoretic channel $\calC$ is a triple $(S,O, C_{SO})$ such that 
+\begin{itemize}
+\item  $S$ is a finite set of secret input values,
+\item $O$ is a finite set of secret output values, and 
+\item $C_{SO}$ is a $|S| \times |O|$ non-negative matrix such that $\sum_{o_\in O} C_{SO}(s,o) =1. $
+\end{itemize}
+$\calC$ is said to be deterministic if for each $s\in S$ there is a unique $o \in O$  such that $C_{SO}(s,o)=1.$
+\end{mydef}
+
+For $s\in S$ and $o\in O,$ the quantity $C_{SO}(s,o)$ is  the conditional probability of obtaining output
+$o$  given that the input to the channel is $s$. 
+Given any information-theoretic channel $\calC=(S,O, C_{SO})$ and \emph{apriori} distribution $Prob_S$ on $S$,   we get a joint probability distribution $Prob_{S,O}$ on 
+$S\times O$ given as  
+$ Prob_{S,O} ((s,o))= Prob_S (s) C_{SO} (s,o).$  For the purpose of this thesis, we shall associate with each deterministic program $P$, a  deterministic  channel $P_\calC= (S,O, C_{SO})$ 
+where $S$ is the set of all possible secret inputs of $P$, $O$ is the set of all possible outputs of $P$ and  $C_{SO}(s,o)=1$ iff
+the program $P$ outputs $o$ on input $s.$ 
+
+When measuring information leakage in programs using min-entropy~\cite{Smith},  an adversary  is considered which tries to guess the input to the program before and after the program is executed.  The difference in \emph{uncertainty} about  $S$ before and after the program execution is taken to be the amount of information leaked. It was proposed in~\cite{Smith}
+that min-entropy be used as the measure of uncertainty. We refer the reader to~\cite{Smith} for details regarding theoretical foundations behind min-entropy.  We just point out here the relevant formulas. 
+
+\begin{mydef}
+Let $\calC=(S,O, C_{SO})$ be an information-theoretic channel and let  $Prob_S$ be an apriori distribution on $S.$
+ The initial uncertainty of the adversary, written  $ H_{\infty}(S) $, is taken to be $-\log_2 \max_{s\in S} Prob_S(s) $ and final uncertainty, written  $ H_{\infty}(S | O) $,  is taken to be $-\log_2 \sum_{o\in O} \max_{s\in S} Prob_{S,O}((s,o)).$ The amount of information leaked by $\calC$, written $L_{S,O}$ is
+ $$ L_{S,O} =  H_{\infty}(S) - H_{\infty}(S | O).$$
+\end{mydef}
+
+As expected, the amount of information leaked by a program is said to be the amount of information leaked by the channel $P_\calC$ associated to it.  
+We are interested in computing the maximum possible amount of leakage under all possible apriori distributions (this quantity is  also known as \emph{min-capacity}). It turns out that for deterministic programs, this just amounts to computing the number  of outputs that are actually feasible, i.e., are actually realized by some input.
+
+\begin{mythm} (\cite{Smith}) Let $\calC=(S,O, C_{SO})$ be a deterministic channel. Let 
+$feasible=\set{o\in O \mathbin{|} \exists s\in S.\ C_{SO}(s,o)=1}.$  Then for any apriori distribution $Prob_S$ on $S$, we have that the information leaked
+$ L_{S,O} \leq \log_2 |feasible|.$ Furthermore $ L_{S,O} = \log_2 |feasible|$ if $Prob_S$ is the uniform distribution on $S.$
+\end{mythm}
+
+\begin{remark}
+Sometimes, Shannon entropy is used to measure uncertainty instead of min-entropy. However, it was shown in~\cite{Smith}, that if we measure information leaked using Shannon entropy then Shannon capacity, the maximum amount of information leaked, of deterministic programs under all possible apriori distributions  matches exactly the min-capacity. 
+\end{remark}
