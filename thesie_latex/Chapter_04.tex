@@ -124,11 +124,11 @@ else{O = base;}
 \begin{tabular}{|l|l|l|l|l|}
 \hline
 bit length(bit) & Getafix(s) & Getafix optimized(s) & jMoped(s) & jMoped optimized(s) \\ \hline
-6 & 41.264 & {} & 9.322 & {} \\ \hline
-7 & 235.64 & 3.3775 & {62.074} & 0.53 \\ \hline
-8 & \textgreater 600 & 6.448 & {326.122} & 0.875 \\ \hline
+6 & 41.264 & {} & 9.32 & {} \\ \hline
+7 & 235.640 & 3.378 & {62.08} & 0.53 \\ \hline
+8 & \textgreater 600 & 6.448 & {326.12} & 0.88 \\ \hline
 9 &  & 13.491 &  & 1.69 \\ \hline
-10 &  & 27.479 &  & 3.045 \\ \hline
+10 &  & 27.479 &  & 3.05 \\ \hline
 \end{tabular}
 \caption{Timing results for sanity check.}
 \label{tbl:sanity}
@@ -146,19 +146,19 @@ else{if(S == 1){O = 1;}
 		else{if(S == 3){O = 3;}
 			else{if(S == 4){O = 4;}
 				else{if(S == 5){O = 5;}
-					else{if(S == 6){O = 6;}
-	}	}	}	}	}	}
+				  else{if(S == 6){O = 6;}
+}	}	}	} 	} }
 \end{lstlisting}
 
 \begin{table}[htbp]
 \begin{tabular}{|l|l|l|l|l|}
 \hline
 {bit length(bit)} & Getafix(s) & {Getafix opt(s)} & jMoped(s) & {jMoped opt(s)} \\ \hline
-6 & {58.834} & {} & {11.865} & {} \\ \hline
-7 & {289.919} & 8.2645 & {63.555} & 0.575 \\ \hline
-8 & \textgreater 600 & 22.6435 & {325.755} & 0.965 \\ \hline
+6 & {58.834} & {} & {11.87} & {} \\ \hline
+7 & {289.919} & 8.264 & {63.56} & 0.58 \\ \hline
+8 & \textgreater 600 & 22.644 & {325.76} & 0.97 \\ \hline
 9 &  & 61.464 &  & 1.86 \\ \hline
-10 &  & 182.1295 &  & 3.57 \\ \hline
+10 &  & 182.130 &  & 3.57 \\ \hline
 \end{tabular}
 \caption{Timing results for implicit flow.}
 \label{tbl:implicit}
@@ -177,10 +177,10 @@ O = O | O << 4;
 \begin{tabular}{|l|l|l|l|l|}
 \hline
 {bit length(bit)} & Getafix(s) & {Getafix opt(s)} & jMoped(s) & {jMoped opt(s)} \\ \hline
-4 & {2.7185} & 0.9825 & {1.14} & 0.375 \\ \hline
+4 & {2.719} & 0.983 & {1.14} & 0.38 \\ \hline
 6 & {44.728} & 3.719 & {32.94} & 0.63 \\ \hline
-8 & \textgreater 600 & 32.931 & eclipse terminates 1 & 1.97 \\ \hline
-10 &  & {Memory allocation failed} &  & 9.765 \\ \hline
+8 & \textgreater 600 & 32.931 & eclipse error & 1.97 \\ \hline
+10 &  & {Memory allocation failed} &  & 9.77 \\ \hline
 \end{tabular}
 \caption{Timing results for mix and duplicate.}
 \label{tbl:mix}
@@ -198,10 +198,10 @@ O = S & 240;
 \begin{tabular}{|l|l|l|l|l|}
 \hline
 {bit length(bit)} & Getafix(s) & {Getafix opt(s)} & jMoped(s) & {jMoped opt(s)} \\ \hline
-4 & 1.728 & 0.7515 & 0.605 & 0.23 \\ \hline
-6 & 38.2435 & 1.3855 & 10.29 & 0.345 \\ \hline
+4 & 1.728 & 0.752 & 0.61 & 0.23 \\ \hline
+6 & 38.244 & 1.386 & 10.29 & 0.35 \\ \hline
 8 & \textgreater 600 & 5.254 & 320.87 & 0.81 \\ \hline
-10 &  & 39.1355 &  & 2.445 \\ \hline
+10 &  & 39.136 &  & 2.45 \\ \hline
 \end{tabular}
 \caption{Timing results for masked copy.}
 \label{tbl:masked}
@@ -222,10 +222,10 @@ if(O + 16 <= S){O = O + 16;}
 \begin{tabular}{|l|l|l|l|l|}
 \hline
 {bit length(bit)} & Getafix(s) & {Getafix opt(s)} & jMoped(s) & {jMoped opt(s)} \\ \hline
-4 & 3.3590 & 1.094 & 0.905 & 0.330 \\ \hline
-6 & 136.0740 & 5.947 & 28.255 & 0.635 \\ \hline
-8 & \textgreater 600 & 65.235 & eclipse error & 2.315 \\ \hline
-10 &  & \textgreater 600 &  & 13.530 \\ \hline
+4 & 3.359 & 1.094 & 0.91 & 0.33 \\ \hline
+6 & 136.074 & 5.947 & 28.26 & 0.64 \\ \hline
+8 & \textgreater 600 & 65.240 & eclipse error & 2.32 \\ \hline
+10 &  & \textgreater 600 &  & 13.53 \\ \hline
 \end{tabular}
 \caption{Timing results for binary search.}
 \label{tbl:bin}
@@ -247,7 +247,7 @@ while(S >= 5){
 \begin{tabular}{|l|l|l|l|l|}
 \hline
 {bit length(bit)} & Getafix(s) & {Getafix opt(s)} & jMoped(s) & {jMoped opt(s)} \\ \hline
-{6} & {10.411} & {2.7805} & {1.7} & {0.305} \\ \hline
+{6} & {10.411} & {2.781} & {1.70} & {0.31} \\ \hline
 \end{tabular}
 \caption{Timing results for electronic purse.}
 \label{tbl:electronic}
@@ -265,7 +265,7 @@ O = S1 + S2 + S3;
 \begin{tabular}{|l|l|l|l|l|}
 \hline
 {bit length(bit)} & Getafix(s) & {Getafix opt(s)} & jMoped(s) & {jMoped opt(s)} \\ \hline
-6 & 225.3995 & 33.488 & 21.115 & 2.595	\\ \hline
+6 & 225.400 & 33.488 & 21.12 & 2.60	\\ \hline
 \end{tabular}
 \caption{Timing results for sum query.}
 \label{tbl:sum}
