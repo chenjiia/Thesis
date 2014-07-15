@@ -1,10 +1,49 @@
 \newpage
 \appendix
 
-\chapter{Title of first appendix}
+\chapter{Context-free grammar for the converter}
 	\label{AP_01}
+This is the converter input grammar. We take it out of the parser and remove the actions to make it serve as a reference.
 
-\section{Section title}
-Here is some additional information which would have detracted from the point being made in the main article.
-\subsection{Subsection title}
-This section even has subtitles
+\begin{verbatim}
+%start program
+%%
+program:
+    var_decls stmts
+var_decls: 
+    %empty 
+    | var_decls var_decl 
+var_decl: 
+    T_VAR T_ID ';' 
+    | T_VAR T_ID '='  exp ';' 
+stmts: 
+    %empty 
+    | stmts stmt 	
+stmt: 
+    T_ID ':' stmt
+    | exp ';' 
+    | T_ID '=' exp ';' 
+    | T_IF '(' exp ')' block T_ELSE block 
+    | T_IF '(' exp ')' block 
+    | T_WHILE '(' exp ')' block 
+    | T_GOTO T_ID ';' 
+block: 
+    '{' stmts '}' 
+exp:
+    T_NUM 
+    |'(' exp ')' 
+    |	T_ID 
+    | exp '+' exp 
+    | exp '^' exp 
+    | exp '-' exp 
+    | exp '|' exp 
+    | exp '&' exp 
+    | exp "<<" exp 
+    | exp ">>" exp 
+    | exp '<' exp 
+    | exp "<=" exp 
+    | exp '>' exp 
+    | exp ">=" exp 
+    | exp "==" exp 
+    | exp "!=" exp
+\end{verbatim}
