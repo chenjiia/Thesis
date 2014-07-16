@@ -115,6 +115,7 @@ We set the bit length to $32$. In array $OHit[]$, each element is $1$ bit and th
 Table \ref{tbl:execTime} and \ref{tbl:memReq} show a comparison on execution time and memory usage respectively for these two approaches. The single loop and array approach has exponential growth for both time and memory, while the double loop approach has exponential growth for time but linear growth for memory, so we choose the double loop approach. 
 
 \begin{table}
+\centering
 \begin{tabular}{|l|l|l|}
 \hline
  & Execution time & Growth  \\ \hline
@@ -127,6 +128,7 @@ Single loop \& array & $2^{bitLength} \times t(P)$ & $\times 2$		\\ \hline
 
 
 \begin{table}
+\centering
 \begin{tabular}{|l|l|l|}
 \hline
  & Memory requirement(bits) & Growth \\ \hline
