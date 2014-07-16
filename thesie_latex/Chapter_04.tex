@@ -120,7 +120,7 @@ else{O = base;}
 \begin{center}
 \begin{tabular}{|l|l|l|l|l|}
 \hline
-bit length(bit) & Getafix(s) & Getafix optimized(s) & jMoped(s) & jMoped optimized(s) \\ \hline
+bit length(bit) & Getafix(s) & Getafix opt(s) & jMoped(s) & jMoped opt(s) \\ \hline
 6 & 41.264 &  & 9.32 &  \\ \hline
 7 & 235.640 & 3.378 & 62.07 & 0.53 \\ \hline
 8 & \textgreater600 & 6.448 & 326.12 & 0.88 \\ \hline
@@ -158,7 +158,7 @@ else{if(S == 1){O = 1;}
 \begin{center}
 \begin{tabular}{|l|l|l|l|l|}
 \hline
-bit length(bit) & Getafix(s) & Getafix optimized(s) & jMoped(s) & jMoped optimized(s) \\ \hline
+bit length(bit) & Getafix(s) & Getafix opt(s) & jMoped(s) & jMoped opt(s) \\ \hline
 6 & 58.834 &  & 11.87 &  \\ \hline
 7 & 289.919 & 8.265 & 63.56 & 0.58 \\ \hline
 8 & \textgreater600 & 22.644 & 325.76 & 0.97 \\ \hline
@@ -188,7 +188,7 @@ O = O | O << 4;
 \begin{center}
 \begin{tabular}{|l|l|l|l|l|}
 \hline
-bit length & Getafix(s) & Getafix optimized(s) & jMoped(s) & jMoped optimized(s) \\ \hline
+bit length & Getafix(s) & Getafix opt(s) & jMoped(s) & jMoped opt(s) \\ \hline
 4 & 2.719 & 0.983 & 1.14 & 0.38 \\ \hline
 6 & 44.728 & 3.719 & 32.94 & 0.63 \\ \hline
 8 & \textgreater600 & 32.931 & JVM terminates & 1.97 \\ \hline
@@ -213,7 +213,7 @@ O = S & 240;
 \begin{center}
 \begin{tabular}{|l|l|l|l|l|}
 \hline
-bit length & Getafix(s) & Getafix optimized(s) & jMoped(s) & jMoped optimized(s) \\ \hline
+bit length & Getafix(s) & Getafix opt(s) & jMoped(s) & jMoped opt(s) \\ \hline
 4 & 1.728 & 0.752 & 0.61 & 0.23 \\ \hline
 6 & 38.244 & 1.386 & 10.29 & 0.35 \\ \hline
 8 & \textgreater600 & 5.254 & 320.87 & 0.81 \\ \hline
@@ -242,7 +242,7 @@ if(O + 16 <= S){O = O + 16;}
 \begin{center}
 \begin{tabular}{|l|l|l|l|l|}
 \hline
-bit length & Getafix(s) & Getafix optimization(s) & jMoped(s) & jMoped optimization(s) \\ \hline
+bit length & Getafix(s) & Getafix optimization(s) & jMoped(s) & jMoped opt(s) \\ \hline
 4 & 3.359 & 1.094 & 0.91 & 0.33 \\ \hline
 6 & 136.074 & 5.947 & 28.26 & 0.64 \\ \hline
 8 & \textgreater600 & 65.235 & JVM terminates & 2.32 \\ \hline
@@ -271,7 +271,7 @@ while(S >= 5){
 \centering
 \begin{tabular}{|l|l|l|l|l|}
 \hline
-{bit length(bit)} & Getafix(s) & {Getafix optimization(s)} & jMoped(s) & {jMoped optimization(s)} \\ \hline
+{bit length(bit)} & Getafix(s) & {Getafix opt(s)} & jMoped(s) & {jMoped opt(s)} \\ \hline
 {5} & {10.411} & {2.781} & {1.70} & {0.31} \\ \hline
 \end{tabular}
 \caption{Timing results for electronic purse.}
@@ -290,7 +290,7 @@ O = S1 + S2 + S3;
 \centering
 \begin{tabular}{|l|l|l|l|l|}
 \hline
-{bit length(bit)} & Getafix(s) & {Getafix optimization(s)} & jMoped(s) & {jMoped optimization(s)} \\ \hline
+{bit length(bit)} & Getafix(s) & {Getafix opt(s)} & jMoped(s) & {jMoped opt(s)} \\ \hline
 5 & 225.400 & 33.488 & 21.12 & 2.60	\\ \hline
 \end{tabular}
 \caption{Timing results for sum query.}
