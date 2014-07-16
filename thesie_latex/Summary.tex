@@ -1,13 +1,19 @@
+% !TEX root =  ThesisMaster.tex
+
 \chapter{Conclusion and future works}
 	\label{CH_summary}
 
-In this thesis we showed a novel approach of using model checking tools to compute information leakage. The principal idea is to wrap the program to be tested in a loop which counts the number of outputs it has, and instead of directly executing the whole code, we append an if statement with the counter as its condition and apply a model checking tool to check for reachability of the statement within if. We think that this approach may be faster than direct execution.
+In this thesis we showed a novel approach of using model checking tools to compute information leakage. The principal idea is to wrap the program to be tested in a loop which counts the number of outputs it has, and instead of directly executing the whole code, we append an if statement with the counter as its condition and apply a model checking tool to check for reachability of the statement within if. Given the success of model-checking to program analysis, we think that this approach may be faster than direct execution.
 
 Our main work divides into three parts:
 \begin{enumerate}
 \item We wrote a converter that converts C-style code into boolean program, which is the input Getafix requires. Later we used the converter on all the seven test cases and it saved us a lot of time on coding the tests. 
-\item We came up with an optimization method which can greatly reduce the time needed to calculate information leakage, either through model checking tools or through direct execution.
-\item We tested the seven programs on both Getafix and jMoped with different bit lengths.
+\item We came up with an optimization method which can greatly reduce the time needed to calculate information leakage, either through model checking tools or through direct execution. The optimization works on certain programs. 
+
+\item We tested seven benchmarks from~\cite{Smith} on both Getafix and jMoped with varying bit lengths.
 \end{enumerate}
 
-We found that our approach in combination with the model checkers does not scale well. We managed to reach $16$ bits with jMoped and the optimization in most of the tests, but a real-world program would use $32$ bits or more. Possible future work may include trying other model checkers, and refining the counting algorithm.
+We found that a direct approach in combination with the model checkers does not scale well. We managed to reach $16$ bits with jMoped and the optimization in most of the tests, but a real-world program would typically use $64$ bits or more. 
+
+
+Potential future work includes trying more sophisticated model checkers. Another approach would be to see if the model-checking algorithms  used in jMoped and Getafix can be modified to count the number of outputs. Another possible direction is to design heuristics to check whether programs are semi-monotonic or not in order to see if our optimization can be applied. Currently, we check for semi-monotonicity by hand. 
