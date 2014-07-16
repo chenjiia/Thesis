@@ -1,10 +1,8 @@
 \chapter{Experiment with Getafix and jMoped}
 	\label{CH_04}
 
-\marginpar{(why and what other property are there)}
 We want to use model-checking tools to see if we can reduce the time requirement of Algorithm \ref{alg:doubleLoop}. Specifically, we choose the reachability property and append Algorithm \ref{alg:reachLine} to the end of Algorithm \ref{alg:doubleLoop}. The statement within the if statement has a label. Although the exact statement following that label is irrelevant, reaching this line means $OCounter$ satisfies the constrains in the condition block.
 
-\marginpar{correct citations}
 We experiment on several model-checking tools, including Interproc from \cite{_interproc_2011}, Berkeley Lazy Abstraction Software Verification Tool (Blast) from \cite{_mtc_2008}, Getafix from \cite{getafix} and jMoped from \cite{moped}. We can not get correct reachability results from Interproc and Blast, so we shift our focus onto Getafix and jMoped.
 
 \renewcommand{\algorithmiccomment}[1]{// #1}
@@ -23,8 +21,7 @@ We experiment on several model-checking tools, including Interproc from \cite{_i
 \end{algorithm}
 
 \section{Getafix}
-\marginpar{Mostly copied from Getafix website. Need rewrite}
-Getafix is a symbolic model checker for Boolean programs implemented in \cite{getafix}. Getafix only supports reachability check. It translates sequential and concurrent Boolean programs into Boolean formulae and uses the model-checker Mucke to solve the reachability problem symbolically using Boolean Decision Diagrams \cite{getafix}. 
+Getafix is a symbolic model checker for Boolean programs. Getafix only supports reachability check. It translates sequential and concurrent Boolean programs into Boolean formulae and uses the model-checker Mucke to solve the reachability problem symbolically using Boolean Decision Diagrams. 
 
 \begin{figure}
 \centering
@@ -86,7 +83,6 @@ end
 Input to the third component, a piece of script, is a c-style code file and a desired bit length. Output of the script is a boolean program ready for Getafix to process. The script first passes the bit length to the built-in function generator and redirects its output to the output file. Then the script passes both the input to the parser and appends its output to the output file. At this point the output is complete.
 
 \section {jMoped}
-\marginpar{need more explanation}
 jMoped is a model checker which checks for coverage in Java programs. The authors implemented it as a plug-in for eclipse, using its UI for parameters and output display. We rewrite our tests in Java so that we can use jMoped on them.
 
 \section{Tests and results}
