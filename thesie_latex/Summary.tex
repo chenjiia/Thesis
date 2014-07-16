@@ -10,4 +10,4 @@ Our main work divides into three parts:
 \item We tested the seven programs on both Getafix and jMoped with different bit lengths.
 \end{enumerate}
 
-We found that our approach could not run faster than direct execution. 
+We found that our approach in combination with the model checkers does not scale well. We managed to reach $16$ bits with jMoped and the optimization in most of the tests, but a real-world program would use $32$ bits or more. Possible future work may include trying other model checkers, and refining the counting algorithm.
