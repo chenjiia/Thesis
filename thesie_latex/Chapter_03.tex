@@ -43,26 +43,17 @@ We found that removing the initialization of $S$ to $0$ can be a way to speed up
 \section{Improvements}
 The properties that $P$ has to follow in order for the optimization to work is rather strict. For example in the sanity check test, the optimization only works when $base$ is $0$. A possible solution would be to start $O$ at the lowest value $P$ can output, in essence pulling the function down on y axis so that it starts with $0$. However, this approach does not ease the restrictions.
 
-In our second attempt to improve this optimization method as shown in Listing \ref{lst:2ndTry}, we started with monotonicity and rearranged the architecture of the outer program. The problem is to count the number of outputs of a monotonically increasing function, and our solution is to iterate through the entire range of $S$ and keep track of the highest output value. If $P$ generates a value $OOut$ which is larger than the current largest value, then $OOut$ replaces that value and $OCounter$ increases. The properties that $P$ has to follow in order to use this optimization is:
+In our second attempt to improve this optimization method as shown in Listing \ref{lst:2ndTry}, we started with monotonicity and rearranged the architecture of the outer program. The problem is to count the number of outputs of a monotonically increasing function, and our solution is to iterate through the entire range of $S$ and keep track of the highest output value. If $P$ generates a value $OOut$ which is larger than the current largest value, then $OOut$ replaces that value and $OCounter$ increases. The properties that $P$ has to follow in order to use this optimization is different from the first one.
 
+For program $P$, it has to follow either of the following conditions:
 \begin{enumerate}
-\item Set the range of $n$ to $[0, 2^{bitLength}-2]$.
-\item Calculate $P(S_{n})$ to be $O_{n}$ and store it in set $O[]$.
-\item Calculate $P(S_{n+1})$ to be $O_{n+1}$ has to be either:
-	\begin{enumerate}
-		\item Greater than $O_{n}$, in which case we store $O_{n+1}$ in $O[]$.
-		\item Already in set $O[]$.
-	\end{enumerate}
-\item Continue step $2$ on the next $n$ value until $n$ reaches its upper bound.
+\item $P_{func}(s) \geq \max_{ s'\leq s}{P_{func}(s')}$
+\item $P_{func}(s) \in \set{P_{func}(s') \mathbin{|} s'\leq s}$
 \end{enumerate}
+To enable the optimization.
 
-\marginpar{This is wrong. Correct this.}
-\begin{enumerate}
-\item Function $P$ is monotonically increasing within range $[n_{1}, n_{2}]$.
-\item Each output of function $P$ with $S$ in range $[n_{2}+1, 1\ll bitLength-1]$ can be produced by at least one $S$ in range $[n_{1}, n_{2}]$.
-\end{enumerate}
+So with the second attempt, we removed the requirement for $P$ to be continuous and start with $0$ from the first attempt. The execution time for the optimization is $2^{bitLength} \times t(P)$, which is $1/2^{bitLength}$ of the execution time of the original double loop.
 
-So with the second attempt, we removed the requirement for $P$ to be continuous and start with $0$ from the first attempt.
 
 \lstset{language=C}  
 \begin{lstlisting}[float=!h, caption={Implementation of the optimization with sanity check in C.},label=lst:2ndTry]
