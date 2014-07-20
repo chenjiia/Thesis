@@ -121,17 +121,18 @@ else{O = base;}
 \begin{tabular}{|l|l|l|l|l|}
 \hline
 bit length(bit) & Getafix(s) & Getafix opt(s) & jMoped(s) & jMoped opt(s) \\ \hline
-6 & 41.264 &  & 9.32 &  \\ \hline
+6 & 41.264 & 2.093 & 9.32 & 0.42 \\ \hline
 7 & 235.640 & 3.378 & 62.07 & 0.53 \\ \hline
 8 & \textgreater600 & 6.448 & 326.12 & 0.88 \\ \hline
-9 &  & 13.491 &  & 1.69 \\ \hline
+9 &  & 13.491 & JVM terminates & 1.69 \\ \hline
 10 &  & 27.479 &  & 3.05 \\ \hline
-11 &  &  &  & 6.23 \\ \hline
-12 &  &  &  & 14.80 \\ \hline
-13 &  &  &  & 35.17 \\ \hline
-14 &  &  &  & 78.29 \\ \hline
-15 &  &  &  & 181.82 \\ \hline
+11 &  & 61.871 &  & 6.23 \\ \hline
+12 &  & 140.115 &  & 14.80 \\ \hline
+13 &  & 302.96 &  & 35.17 \\ \hline
+14 &  & 580.982 &  & 78.29 \\ \hline
+15 &  & \textgreater600 &  & 181.82 \\ \hline
 16 &  &  &  & 444.17 \\ \hline
+17 &  &  &  & JRE Error \\ \hline
 \end{tabular}
 \end{center}
 \caption{Timing results for sanity check.}
@@ -159,17 +160,18 @@ else{if(S == 1){O = 1;}
 \begin{tabular}{|l|l|l|l|l|}
 \hline
 bit length(bit) & Getafix(s) & Getafix opt(s) & jMoped(s) & jMoped opt(s) \\ \hline
-6 & 58.834 &  & 11.87 &  \\ \hline
+6 & 58.834 & 2.937 & 11.87 & 0.47 \\ \hline
 7 & 289.919 & 8.265 & 63.56 & 0.58 \\ \hline
 8 & \textgreater600 & 22.644 & 325.76 & 0.97 \\ \hline
-9 &  & 61.464 &  & 1.86 \\ \hline
+9 &  & 61.464 & \textgreater600 & 1.86 \\ \hline
 10 &  & 182.130 &  & 3.57 \\ \hline
-11 &  &  &  & 7.21 \\ \hline
-12 &  &  &  & 15.75 \\ \hline
+11 &  & 429.298 &  & 7.21 \\ \hline
+12 &  & \textgreater600 &  & 15.75 \\ \hline
 13 &  &  &  & 36.31 \\ \hline
 14 &  &  &  & 81.53 \\ \hline
 15 &  &  &  & 182.01 \\ \hline
 16 &  &  &  & 415.69 \\ \hline
+17 &  &  &  & \textgreater600 \\ \hline
 \end{tabular}
 \end{center}
 \caption{Timing results for implicit flow.}
@@ -217,10 +219,11 @@ bit length & Getafix(s) & Getafix opt(s) & jMoped(s) & jMoped opt(s) \\ \hline
 4 & 1.728 & 0.752 & 0.61 & 0.23 \\ \hline
 6 & 38.244 & 1.386 & 10.29 & 0.35 \\ \hline
 8 & \textgreater600 & 5.254 & 320.87 & 0.81 \\ \hline
-10 &  & 39.136 &  & 2.45 \\ \hline
-12 &  &  &  & 11.78 \\ \hline
-14 &  &  &  & 57.08 \\ \hline
+10 &  & 39.136 & JVM terminates & 2.45 \\ \hline
+12 &  & 247.135 &  & 11.78 \\ \hline
+14 &  & \textgreater600 &  & 57.08 \\ \hline
 16 &  &  &  & 327.95 \\ \hline
+18 &  &  &  & JRE fatal error \\ \hline
 \end{tabular}
 \end{center}
 \caption{Timing results for masked copy.}
