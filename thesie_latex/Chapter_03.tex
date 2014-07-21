@@ -2,7 +2,7 @@
 	\label{CH_03}
 % should use past tense
 
-In this chapter we describe our discovery that if the test program $P$ meets a certain property, then we can use a different wrapping loop and greatly reduce the time Getafix and jMoped needs to check for reachability.
+In this chapter we describe our discovery that if the test program $P$ meets a certain property that we call semi-monotonicity, then we can use a different wrapping loop and greatly reduce the time Getafix and jMoped needs to check for reachability.
 
 \section{Discovery by mistake}
 During the initial tests with the sanity check program of bit length 32, the program terminates in less than a minute and gives the correct output count. Later we time the execution of an empty loop from $0$ to $2^{32} - 1$ and the result is $10.30$ seconds, so theoretically the double loop would take a much longer time to terminate, longer than our test result with sanity check.  Listing \ref{lst:1stTry} shows the C code we used.
@@ -40,10 +40,19 @@ We found that removing the initialization of $S$ to $0$ can be a way to speed up
 \item Each output of function $P$ with $S$ in range $[n+1, 1\ll bitLength-1]$ can be produced by at least one $S$ in range $[0, n]$.
 \end{enumerate}
 
-\section{Improvements}
-The properties that $P$ has to follow in order for the optimization to work is rather strict. For example in the sanity check test, the optimization only works when $base$ is $0$. A possible solution would be to start $O$ at the lowest value $P$ can output, in essence pulling the function down on y axis so that it starts with $0$. However, this approach does not ease the restrictions.
+And Figure \ref{fig:1stTry} shows an example function that follows these properties. In the first part $[0, 4]$, function output has to start from $0$ and be continuously increasing. As to the second part $[5, 6]$, each output has to be equal to an output in $[0, 4]$.
 
-In our second attempt to improve this optimization method as shown in Listing \ref{lst:2ndTry}, we started with monotonicity and rearranged the architecture of the outer program. The problem is to count the number of outputs of a monotonically increasing function, and our solution is to iterate through the entire range of $S$ and keep track of the highest output value. If $P$ generates a value $OOut$ which is larger than the current largest value, then $OOut$ replaces that value and $OCounter$ increases. The properties that $P$ has to follow in order to use this optimization is different from the first one.
+\begin{figure}
+\centering
+\includegraphics[scale=0.8]{Figures/1stTry}
+\caption{A function that follows the properties from the first optimization.}
+\label{fig:1stTry}
+\end{figure}
+
+\section{Improvements}
+The properties that $P$ has to follow in order for the optimization to work is rather strict. For example in the sanity check test, the optimization only works when $base$ is $0$. A possible solution would be to start $O$ at the lowest value $P$ can output, in essence pulling the function down on $y$ axis so that it starts with $0$. However, this approach does not ease the restrictions.
+
+In our second attempt as shown in Listing \ref{lst:2ndTry} to improve this optimization method, we started with monotonicity and rearranged the architecture of the outer program. The problem is to count the number of outputs of a monotonically increasing function, and our solution is to iterate through the entire range of $S$ and keep track of the highest output value. If $P$ generates a value $OOut$ which is larger than the current largest value, then $OOut$ replaces that value and $OCounter$ increases. The properties that $P$ has to follow in order to use this optimization is different from the first one.
 
 For program $P$, it has to follow either of the following conditions:
 \begin{enumerate}
@@ -51,6 +60,17 @@ For program $P$, it has to follow either of the following conditions:
 \item $P_{func}(s) \in \set{P_{func}(s') \mathbin{|} s'\leq s}$
 \end{enumerate}
 To enable the optimization.
+
+\begin{figure}
+\centering
+\includegraphics[scale=0.8]{Figures/2ndTry}
+\caption{A function that follows the properties from the second optimization.}
+\label{fig:2ndTry}
+\end{figure}
+
+Also Figure \ref{fig:2ndTry} shows an example function that follows these conditions. A new output value has to be either larger than all previous values like when $S$ is $3$, or is within the set of all previous outputs like when $S$ is $6$.
+
+
 
 So with the second attempt, we removed the requirement for $P$ to be continuous and start with $0$ from the first attempt. The execution time for the optimization is $2^{bitLength} \times t(P)$, which is $1/2^{bitLength}$ of the execution time of the original double loop.
 

@@ -45,14 +45,14 @@ Input for Getafix are boolean programs, meaning it only supports binary variable
 Input to the parser is a C-style code file and a desired bit length. Output of the parser is its corresponding boolean program which follows the syntax of Getafix input file. First we define the syntax of the input code and second we create the parser using flex and bison. The parser scans the input code and builds a syntax tree. Then the parser prints the syntax tree as a boolean program. The parser has three points worth noting:
 
 \begin{table}
-\caption{Examples of input and output of the parser, with bit length of 4}
-\label{tbl:parser-example}
 \begin{tabular}{|l|l|}
 \hline
 Input& Output  \\ \hline
 var SMax = 16;     & \begin{tabular}[c]{@{}l@{}}decl SMax4,SMax3,SMax2,SMax1,SMax0;\\ Smax4, SMax3, SMax2, SMax1, SMax1 := 1,0,0,0,0;\end{tabular} \\ \hline
 STemp = STemp - 5; & \begin{tabular}[c]{@{}l@{}}STemp4,STemp3,STemp2,STemp1,STemp0 := \\ minus(STemp4,STemp3,STemp2,STemp1,STemp0,0,0,1,0,1); \end{tabular} \\ \hline
 \end{tabular}
+\caption{Examples of input and output of the parser, with bit length of 4}
+\label{tbl:parser-example}
 \end{table}
 
 \begin{enumerate}
@@ -86,7 +86,7 @@ Input to the third component, a piece of script, is a C-style code file and a de
 jMoped is a model checker which checks for coverage in Java programs. The authors implemented it as a plug-in for eclipse, using its UI for parameters and output display. We rewrite our tests in Java so that we can use jMoped on them.
 
 \section{Tests and results}
-Before we have the converter, we coded a few test cases manually and Getafix gave us the correct answers. Now with the converter we can run more complicated tests and see if Getafix is a good solution to the problem of calculating information leakage. As with jMoped, we rewrite the tests in Java. We decide to run the eight test cases from paper \cite{Plas11}. In each test, $O$ represents the output of the test program, and $S$ is the input. Also in the tables, optimization refers to the final optimization in the previous chapter, and an empty cell means that we did not do this experiment.
+Before we have the converter, we coded a few test cases manually and Getafix gave us the correct answers. Now with the converter we can run more complicated tests and see if Getafix is a good solution to the problem of calculating information leakage. As with jMoped, we rewrite the tests in Java. We decide to run the eight test cases from paper \cite{Plas11}. In each test, $O$ represents the output of the test program, and $S$ is the input. Also in the tables, opt refers to the final optimization in the previous chapter, and we set the maximum execution time to 600 seconds. 
 
 We did our tests on a laptop computer, and key hardware specifications are:
 \begin{description}
