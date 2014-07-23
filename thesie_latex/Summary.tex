@@ -7,8 +7,8 @@ In this thesis we showed a novel approach of using model checking tools to compu
 
 Our main work divides into three parts:
 \begin{enumerate}
-\item We wrote a converter that converts C-style code into boolean program, which is the input Getafix requires. Later we used the converter on all the seven test cases and it saved us a lot of time on coding the tests. 
-\item We came up with an optimization method which can greatly reduce the time needed to calculate information leakage, either through model checking tools or through direct execution. The optimization works on certain programs. 
+\item We wrote a converter that converts C-style code into boolean program, which is the input Getafix requires. Later we used the converter on all the seven test cases and it saved us a lot of time in coding the tests. 
+\item We came up with an optimization method which can greatly reduce the time needed to calculate information leakage, either through model checking tools or through direct execution. The optimization works on certain programs that satisfy special properties which we call psudeo-monotnicity. 
 
 \item We tested seven benchmarks from~\cite{Smith} on both Getafix and jMoped with varying bit lengths.
 \end{enumerate}

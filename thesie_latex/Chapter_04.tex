@@ -1,8 +1,11 @@
+% !TEX root =  ThesisMaster.tex
+
 \chapter{Experiment with Getafix and jMoped}
 	\label{CH_04}
 
-We want to use model-checking tools to see if we can reduce the time requirement of Algorithm \ref{alg:doubleLoop}. Specifically, we choose the reachability property and append Algorithm \ref{alg:reachLine} to the end of Algorithm \ref{alg:doubleLoop}. The statement within the if statement has a label. Although the exact statement following that label is irrelevant, reaching this line means $OCounter$ satisfies the constrains in the condition block.
-
+We want to use model-checking tools to see if we can reduce the time requirement of Algorithm \ref{alg:doubleLoop}. Model-checking tools can help us to decide if a particular line in a program can be reached. Our approach entails  appending Algorithm \ref{alg:reachLine} to the end of Algorithm \ref{alg:doubleLoop}. The statement within the if statement has a label. Although the exact statement following that label is irrelevant, reaching this line means $OCounter$ satisfies the constrains in the condition block. In our tests, we used only an equality test. Our purpose is to see our optimization performs with respect to other optimizations and how the tools scale with the number of bits. However, note we can easily convert reachability tests into an exact computation by using a binary search to successively refine the number of the possible values of the counter which counts the number of outputs.  
+ \newpage
+  
 We experiment on several model-checking tools, including Interproc from \cite{_interproc_2011}, Berkeley Lazy Abstraction Software Verification Tool (Blast) from \cite{_mtc_2008}, Getafix from \cite{getafix} and jMoped from \cite{moped}. We can not get correct reachability results from Interproc and Blast, so we shift our focus onto Getafix and jMoped.
 
 \renewcommand{\algorithmiccomment}[1]{// #1}
@@ -21,7 +24,7 @@ We experiment on several model-checking tools, including Interproc from \cite{_i
 \end{algorithm}
 
 \section{Getafix}
-Getafix is a symbolic model checker for Boolean programs. Getafix only supports reachability check. It translates sequential and concurrent Boolean programs into Boolean formulae and uses the model-checker Mucke to solve the reachability problem symbolically using Boolean Decision Diagrams. 
+Getafix is a symbolic model checker for Boolean programs that supports reachability checking. It translates sequential Boolean programs into  Boolean modal mu-calculus formulae and uses the model-checker Mucke~\cite{mucke} to solve the reachability problem. Mucke itself model-checks symbolically using Boolean Decision Diagrams. 
 
 \begin{figure}
 \centering
@@ -34,7 +37,7 @@ Getafix is a symbolic model checker for Boolean programs. Getafix only supports 
 Input for Getafix are boolean programs, meaning it only supports binary variables which can be either 0 or 1. We represent our problem in C-style code, thus we need to translate it into boolean form. We implemented a converter to automate this process, and Figure \ref{fig:workFlow} shows the workflow we used to calculate information leakage using Getafix. The converter has three components, a parser, a built-in function generator and a piece of script which calls the first two components and assembles the output file. The converter has these properties:
 
 \begin{enumerate}
-\item The input to the converter is a C-style code file and a positive integer which represents the bit length. The converter supports 32 bits and less. Also note that the converter represents a number with bit length of $bitLength$ using $bitLength + 1$ bits. We do this so that we do not need to deal with the upper bound explicitly when writing a loop iterating from $0$ to $1<<bitLength - 1$.
+\item The input to the converter is a C-style code file and a positive integer which represents the bit length. The converter supports 32 bits and less. Also note that the converter represents a number with bit length of $bitLength$ using $bitLength + 1$ bits. We do this so that we do not need to deal with the upper bound explicitly when writing a loop iterating from $0$ to $1<<2^bitLength - 1$.
 \item The output of the converter is a boolean program which follows the syntax of Getafix input file.
 \item In the language that we defined for the input file, we support only one variable type: non-negative decimal integer. Again we support the length up to 32 bits.
 \item Our converter does not support function definitions. The input file has two parts, variable declarations block and statements block. The parser will print these blocks into the main function of the output boolean program. Also we require all variable declarations to appear before statements in the input code. Getafix input syntax has this requirement, and we decide to keep it in our converter.
@@ -305,6 +308,6 @@ From the seven test programs and timing results, we can conclude the following p
 \begin{enumerate}
 \item At the same bit length, jMoped is faster than Getafix. 
 \item The optimization can reduce execution time for jMoped and Getafix greatly.
-\item The best result we get is using jMoped with the optimization, but still the time growth is exponential.
+\item The best result we get is using jMoped with the optimization, but still the time growth appears to be exponential.
 \end{enumerate}
 
