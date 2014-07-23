@@ -10,14 +10,14 @@
 \section{The problem and two intuitive solutions}
 We define a program $P$ as follows:
 \begin{mydef}
-Let $bitLength\in \left\{ {0,1,2,..., 32}\right\}$ and let $P$ be a function with one input and one output. Also input $S \in \left\{ {0,1,2,..., 1\ll bitLength-1}\right\}$ and output $O \in \left\{ {0,1,2,..., 1\ll bitLength-1}\right\}$.
+Let $bitLength\in \left\{ {0,1,2,..., 32}\right\}$ and let $P$ be a function with one input and one output. Also input $S \in \left\{ {0,1,2,..., 1\ll 2^bitLength-1}\right\}$ and output $O \in \left\{ {0,1,2,..., 1\ll 2^bitLength-1}\right\}$.
 \end{mydef}
 
-And we need to count the number of outputs of $P$. We come up with two approaches: 
+We need to count the number of feasible outputs of $P$ in order to compute the information leakage. We have  two approaches to this problem: 
 
 \begin{enumerate}
-\item Put the program in a double loop and count the number of outputs. The outer loop is for possible outputs and the inner loop is for inputs. When the program in the inner loop produces an output which matches the outer loop, counter increases.
-\item Let the program iterate through all input values and record the output hit results in a bit array. Counter increases when a bit flips.
+\item Put the program in a double loop and count the number of outputs. The outer loop iterates over possible outputs and the inner loop iterates over possible inputs. When the program in the inner loop produces an output which matches the outer loop, the counter counting the number of feasible outputs  increases.
+\item Let the program iterate through all input values and record the output hit results in a bit array. The counter increases when a bit flips.
 \end{enumerate}
 
 The first approach is time-consuming, while the second one is memory-consuming. We will discuss these two approaches in detail in the subsections.
@@ -53,11 +53,11 @@ In Algorithm \ref{alg:doubleLoop}, for each possible output value, we iterate th
 \label{alg:doubleLoop}
 \end{algorithm}
 
-In this approach, we declare seven variables, and all of them require $bitLength$ bits except for $OCounter$ which needs to be $bitLength + 1$ bits. The total memory usage for variables is $7 \times bitLength + 1$ at $O(bitLength)$. As with execution time, we assume program $P$ takes $t(P)$ seconds to execute, and the total execution time for the double loop when break is never reached is $2^{bitLength} \times 2^{bitLength} \times t(P)$. Thus the time complexity is $(2^{O(bitLength)}) \times t(P)$.
+In this approach, we declare seven variables, and all of them require $bitLength$ bits except for $OCounter$ which needs to be $bitLength + 1$ bits. The total memory usage for variables is $7 \times bitLength + 1$ at $O(bitLength)$. If we assume program $P$ has time complexity of $O(t(P))$ then the total execution time for the double loop when break is never reached is $2^{bitLength} \times 2^{bitLength} \times O(t(P))$. Thus the time complexity is $2^{O(bitLength)}) \times O(t(P))$.
 
 In order to get an estimation of how much time the double loop will take to execute, we implemented a piece of C code with an empty while loop which loops $2^{32}$ times. On our experiment PC, this loop takes on average $10.30$ seconds to complete. Were we to run a double loop in bit length of 32, the execution time would be $2^{32} \times 10.30$ seconds, which is around $1403$ years. Running the double loop at 32 bits would be infeasible.
 
-Starting with bit length $n$, the time requirement for a full double loop is $2^{2 \times n} \times t(P)$. Increase the bit length by one and the time becomes $4 \times 2^{2 \times n} \times t(P)$, four times the previous time. Table \ref{tab:gccRun} shows the actual execution time of an empty double loop under different bit length, and the time increase follows the theoretical analysis. At bit length of 23, the execution time would exceed a day, and executing at higher bit length is impractical.
+Starting with bit length $n$, the time requirement for a full double loop is $2^{2 \times n} \times O(t(P))$. Increase the bit length by one and the time becomes $4 \times 2^{2 \times n} \times t(P)$, four times the previous time. Table \ref{tab:gccRun} shows the actual execution time of an empty double loop under different bit length, and the time increase follows the theoretical analysis. At bit length of $23$, the execution time would exceed a day, and executing at higher bit length is impractical.
 
 \begin{table}
 \centering
@@ -107,7 +107,8 @@ In Algorithm \ref{alg:singleLoop}, we create a bit array with size equal to the 
 \label{alg:singleLoop}
 \end{algorithm}
 
-In Algorithm \ref{alg:singleLoop} except for the array we have 7 variables using $7 \times bitLength + 1$ bits memory. The array $OHit[]$ is of size $2^{bitLength} \times 1$ bits making a total of $2^{bitLength} + 7 \times bitLength + 1$ bits at $2^{O(bitLength})$. As with execution time, we assume program $P$ takes $t(P)$ seconds to execute, and the execution time for the single loop is $2^{bitLength} \times t(P)$. Thus the time complexity is $(2^{O(bitLength)}) \times t(P)$.
+In Algorithm \ref{alg:singleLoop} except for the array we have 7 variables using $7 \times bitLength + 1$ bits memory. The array $OHit[]$ is of size $2^{bitLength} \times 1$ bits making a total of $2^{bitLength} + 7 \times bitLength + 1$ bits at $2^{O(bitLength})$. %As with execution time, we assume program $P$ takes $t(P)$ seconds to execute, and the execution time for the single loop is $2^{bitLength} \times t(P)$.
+ The time complexity for this algorithm is $(2^{O(bitLength)}) \times O(t(P))$.
 
 We set the bit length to $32$. In array $OHit[]$, each element is $1$ bit and the number of elements is $2^{32}$. The total memory usage for this array is $2^{32} \times 1$ bits, which is about $0.5$ gigabytes. To our knowledge, it is neither difficult nor expensive to build a PC with more than 16 gigabytes of memory, and we can get such a PC off-the-shelf from top gaming PC brands like Alienware. However, as this memory requirement grows exponentially, adding five or six bits to the bit length and the requirement will exceed the capacity of current PCs.
 

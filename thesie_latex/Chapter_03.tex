@@ -1,11 +1,14 @@
+% !TEX root =  ThesisMaster.tex
+
 \chapter{Semi-monotonic programs}
 	\label{CH_03}
 % should use past tense
 
-In this chapter we describe our discovery that if the test program $P$ meets a certain property that we call semi-monotonicity, then we can use a different wrapping loop and greatly reduce the time Getafix and jMoped needs to check for reachability.
+In this chapter we describe our discovery that if the test program $P$ meets a certain property that we call semi-monotonicity, then we can use a different wrapping loop. 
+%and greatly reduce the time Getafix and jMoped needs to check for reachability.
 
 \section{Discovery by mistake}
-During the initial tests with the sanity check program of bit length 32, the program terminates in less than a minute and gives the correct output count. Later we time the execution of an empty loop from $0$ to $2^{32} - 1$ and the result is $10.30$ seconds, so theoretically the double loop would take a much longer time to terminate, longer than our test result with sanity check.  Listing \ref{lst:1stTry} shows the C code we used.
+During the initial tests with the sanity check program of bit length 32, the program terminates in less than a minute and gives the correct output count. Later we time the execution of an empty loop from $0$ to $2^{32} - 1$ and the result is $10.30$ seconds, so theoretically the double loop would take a much longer time to terminate, longer than our test result with sanity check.  Listing \ref{lst:1stTry} shows the C code we used. We set base to 0 in our tests.
 
 \lstset{language=C}  
 \begin{lstlisting}[float=!h, caption={Initial implementation of the double loop with sanity check in C.},label=lst:1stTry]
@@ -32,7 +35,8 @@ for (;O<OMax;O++){
 
 Due to the large difference in actual execution time and the theoretical time, we decided to inspect the code for errors. Our code differs from Algorithm \ref{alg:doubleLoop} at two places: First, $S$ and $O$ can not reach $SMax$ and $OMax$ due to the use of $<$, thus the upper bound is not tested. Second, in the inner loop, we did not initialize $S$ to $0$ except for its first iteration. The first point does not affect the output count of the sanity check example as every $S$ greater than $16$ will lead to a $P(S)$ value of $base$ which is $0$. The second point is the cause of the large time difference, because essentially $P$ only executes once for each $S$, reaching a total of $2^{32}$ times, much smaller than the full double loop in which $P$ executes $2^{2 \times 32}$ times.
 
-We found that removing the initialization of $S$ to $0$ can be a way to speed up some test cases, but not all. Specifically, program $P$ has to obey certain properties:
+We found that removing the initialization of $S$ to $0$ can be a way to speed up some programs, but not all. 
+Specifically, program $P$ has to obey certain properties in order for this initialization to give an accurate answer:
 
 \begin{enumerate}
 \item Function $P$ is monotonically increasing within range $[0, n]$.
@@ -40,7 +44,7 @@ We found that removing the initialization of $S$ to $0$ can be a way to speed up
 \item Each output of function $P$ with $S$ in range $[n+1, 1\ll bitLength-1]$ can be produced by at least one $S$ in range $[0, n]$.
 \end{enumerate}
 
-And Figure \ref{fig:1stTry} shows an example function that follows these properties. In the first part $[0, 4]$, function output has to start from $0$ and be continuously increasing. As to the second part $[5, 6]$, each output has to be equal to an output in $[0, 4]$.
+Figure \ref{fig:1stTry} shows an example function that follows these properties. In the first part $[0, 4]$, function output has to start from $0$ and be continuously increasing. As to the second part $[5, 6]$, each output has to be equal to an output in $[0, 4]$.
 
 \begin{figure}
 \centering
